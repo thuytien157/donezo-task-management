@@ -1,0 +1,26 @@
+<!-- <div class="row">
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 mt-2 mt-2">
+                <div class="card">
+                    <div class="card__skeleton card__title"></div>
+                    <div class="card__skeleton card__description"></div>
+                </div>
+            </div>
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 mt-2 mt-2">
+                <div class="card">
+                    <div class="card__skeleton card__title"></div>
+                    <div class="card__skeleton card__description"></div>
+                </div>
+            </div>
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 mt-2 mt-2">
+                <div class="card">
+                    <div class="card__skeleton card__title"></div>
+                    <div class="card__skeleton card__description"></div>
+                </div>
+            </div>
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 mt-2 mt-2">
+                <div class="card">
+                    <div class="card__skeleton card__title"></div>
+                    <div class="card__skeleton card__description"></div>
+                </div>
+            </div>
+        </div> -->
