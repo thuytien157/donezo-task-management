@@ -159,61 +159,82 @@ class UserController extends Controller
         }
     }
 
-    // public function sendResetLink(Request $request)
-    // {
-    //     $request->validate(['email' => 'required|email']);
-    //     $user = User::where('email', $request->email)->first();
-    //     if (!$user) {
-    //         return response()->json(['message' => 'Email không tồn tại trong hệ thống!'], 404);
-    //     }
-    //     $token = Str::random(64);
-    //     $passwordReset = new PasswordReset;
-    //     $passwordReset->email = $request->email;
-    //     $passwordReset->token = $token;
-    //     $passwordReset->created_at = Carbon::now();
+    public function sendResetLink(Request $request)
+    {
 
-    //     $resetLink = env('FRONTEND_URL') . '/reset-password?token=' . $token . '&email=' . urlencode($request->email);
+        $validator = Validator::make($request->all(),
+            [
+                'email' => 'required|email',
+            ],
+            [
+                'email.required' => 'Vui lòng nhập email!',
+                'email.email' => 'Email không đúng định dạng',
+            ]
+        );
 
-    //     Mail::to($request->email)->send(new ResetPass($resetLink));
-
-    //     return response()->json(['message' => 'Link đặt lại mật khẩu đã được gửi!']);
-    // }
-
-    // public function resetPassword(Request $request)
-    // {
-    //     $validator = Validator::make(
-    //         $request->all(),
-    //         [
-    //             'email' => 'required|email',
-    //             'token' => 'required|string',
-    //             'password' => 'required|min:6|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$/',
-    //         ],
-    //         [
-    //             'email.required' => 'Vui lòng nhập email',
-    //             'email.email' => 'Email không đúng định dạng',
-    //             'password.required' => 'Vui lòng nhập mật khẩu',
-    //             'password.min' => 'Mật khẩu phải có ít nhất 6 chữ số',
-    //             'password.regex' => 'Mật khẩu phải có ít nhất 1 chữ hoa, 1 chữ thường, 1 số và 1 ký tự đặc biệt.',
-    //         ]
-    //     );
-
-    //     if ($validator->fails()) {
-    //         return response()->json(['errors' => $validator->errors()], 422);
-    //     };
-    //     $reset = PasswordReset::where('email', $request->email)
-    //         ->where('token', $request->token)
-    //         ->first();
-
-    //     if (!$reset || Carbon::parse($reset->created_at)->addMinutes(60)->isPast()) {
-    //         return response()->json(['message' => 'Token không hợp lệ hoặc đã hết hạn.'], 400);
-    //     }
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        };
 
 
-    //     $user = User::where('email', $request->email)->first();
-    //     $user->password = bcrypt($request->password);
-    //     $user->save();
-    //     // PasswordReset::where('email', $request->email)->delete();
+        $user = User::where('email', $request->email)->first();
+        if (!$user) {
+            return response()->json(['message' => 'Email không tồn tại trong hệ thống!'], 404);
+        }
+        $token = Str::random(64);
+        $passwordReset = new PasswordReset;
+        $passwordReset->email = $request->email;
+        $passwordReset->token = $token;
+        $passwordReset->created_at = Carbon::now();
+        $passwordReset->save();
+        $resetLink = env('FRONTEND_URL') . '/reset-password?token=' . $token . '&email=' . urlencode($request->email);
 
-    //     return response()->json(['message' => 'Đặt lại mật khẩu thành công!']);
-    // }
+        Mail::to($request->email)->send(new ResetPass($resetLink));
+
+        return response()->json(['message' => 'Link đặt lại mật khẩu đã được gửi!']);
+    }
+
+    public function resetPassword(Request $request)
+    {
+        $validator = Validator::make(
+            $request->all(),
+            [
+                'email' => 'required|email',
+                'token' => 'required|string',
+                'password' => 'required|min:6|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$/|confirmed',
+            ],
+            [
+                'email.required' => 'Vui lòng nhập email',
+                'email.email' => 'Email không đúng định dạng',
+                'password.required' => 'Vui lòng nhập mật khẩu',
+                'password.min' => 'Mật khẩu phải có ít nhất 6 chữ số',
+                'password.regex' => 'Mật khẩu phải có ít nhất 1 chữ hoa, 1 chữ thường, 1 số và 1 ký tự đặc biệt.',
+                'password.confirmed' => 'Xác nhận mật khẩu không trùng khớp.',
+            ]
+        );
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        };
+        $reset = PasswordReset::where('email', $request->email)
+            ->where('token', $request->token)
+            ->first();
+
+        if (!$reset || Carbon::parse($reset->created_at)->addMinutes(60)->isPast()) {
+            return response()->json(['message' => 'Token không hợp lệ hoặc đã hết hạn.'], 400);
+        }
+
+        $user = User::where('email', $request->email)->first();
+        $user->password = bcrypt($request->password);
+        $user->save();
+        PasswordReset::where('email', $request->email)->delete();
+        $token = $user->createToken('auth_token')->plainTextToken;
+        return response()->json(
+            [
+                'message' => 'Đặt lại mật khẩu thành công!',
+                'user'=> $user->avatar,
+                'token'=> $token,
+            ]
+        );
+    }
 }

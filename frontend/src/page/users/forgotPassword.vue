@@ -5,11 +5,11 @@
                 Quên mật khẩu
             </div>
 
-            <form class="form" @click.prevent="forgotPass">
+            <form class="form" @submit.prevent="forgotPass">
                 <div class="form-group">
                     <label for="email">Email</label>
-                    <small class="text-danger" v-if="errors">{{ errors[0] }}</small>
-                    <input type="text" id="email" name="email" placeholder="Nhập email của bạn tại đây..." required
+                    <small class="text-danger" v-if="errors.email">{{ errors.email[0] }}</small>
+                    <input type="text" id="email" name="email" placeholder="Nhập email của bạn tại đây..."
                         v-model="email">
                 </div>
 
@@ -41,9 +41,14 @@ export default {
                 toast.success('Gửi thành công')
 
             } catch (error) {
-                if (error.response && error.response.status === 404) {
+                if (error.response && error.response.status === 422) {
                     errors.value = {};
                     errors.value = error.response.data.errors;
+                }else if(error.response && error.response.status === 404){
+                    errors.value = {};
+                    errors.value = {
+                        email: [error.response.data.message] 
+                    };
                 }
             }
         }

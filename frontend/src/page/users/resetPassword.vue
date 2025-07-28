@@ -5,17 +5,17 @@
                 Đặt lại mật khẩu
             </div>
 
-            <form class="form" @click.prevent="forgotPass">
+            <form class="form" @submit.prevent="resetPass">
                 <div class="form-group">
                     <label for="email">Mật khẩu</label>
-                    <small class="text-danger" v-if="errors">{{ errors[0] }}</small>
-                    <input type="password" id="email" name="email" placeholder="Nhập mật của bạn tại đây..." required
+                    <small class="text-danger" v-if="errors.password">{{ errors.password[0] }}</small>
+                    <input type="password" id="email" name="email" placeholder="Nhập mật của bạn tại đây..."
                         v-model="password">
                 </div>
                 <div class="form-group">
                     <label for="email">Nhập lại mật khẩu</label>
-                    <small class="text-danger" v-if="errors">{{ errors[0] }}</small>
-                    <input type="password" id="email" name="email" placeholder="Nhập mật của bạn tại đây..." required
+                    <small class="text-danger" v-if="errors.password_confirmation">{{ errors.password_confirmation[0] }}</small>
+                    <input type="password" id="email" name="email" placeholder="Nhập mật của bạn tại đây..."
                         v-model="password_confirmation">
                 </div>
 
@@ -44,19 +44,29 @@ export default {
         const token = route.query.token;
         const email = route.query.email;
         const password_confirmation = ref('');
-        const forgotPass = async () => {
+        const resetPass = async () => {
             try {
                 const res = await axios.post('http://127.0.0.1:8000/api/reset-password', {
                     email: email,
                     password: password.value,
+                    password_confirmation: password_confirmation.value,
                     token: token
                 })
-                toast.success('Gửi thành công')
+
+                localStorage.setItem('user', JSON.stringify(res.data.user))
+                localStorage.setItem('token', res.data.token)
+                router.push('/home')
+                toast.success('Đặt lại mật khẩu thành công!')
 
             } catch (error) {
-                if (error.response && error.response.status === 404) {
+                if (error.response && error.response.status === 422) {
                     errors.value = {};
                     errors.value = error.response.data.errors;
+                }else if(error.response && error.response.status === 400){
+                    errors.value = {};
+                    errors.value = {
+                        password: [error.response.data.message] 
+                    };
                 }
             }
         }
@@ -64,7 +74,7 @@ export default {
         return {
             email,
             errors,
-            forgotPass,
+            resetPass,
             token,
             password_confirmation,
             password

@@ -58,7 +58,7 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  document.title = to.meta.title || "DONEZO TASKMANAMENT";
+  document.title = to.meta.title || "DONEZO TASKMANAGEMENT";
 
   const token = localStorage.getItem("token");
   const userString = localStorage.getItem("user");
