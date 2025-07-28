@@ -4,8 +4,11 @@ import TheHeader from './components/TheHeader.vue'
 </script>
 
 <template>
-  <TheHeader></TheHeader>
-   <div class="content">
+  <TheHeader v-if="!$route.meta.hideHeader"></TheHeader>
+  <div :class="{
+    content: !$route.meta.hideHeader,
+    content1: $route.meta.hideHeader
+  }">
     <router-view />
   </div>
   <!-- <TheFooter></TheFooter> -->
@@ -13,6 +16,10 @@ import TheHeader from './components/TheHeader.vue'
 
 <style scoped>
 .content {
-  padding-top: 76px; /* hoặc đúng chiều cao header */
+  padding-top: 76px;
+}
+
+.content1 {
+  padding-top: none;
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
     <header>
         <nav class="navbar navbar-expand-lg p-3 shadow-sm position-fixed w-100 top-0"
-            style="background-color: white; z-index: 999;">
+            style="background-color: white; z-index: 999">
             <div class="container-fluid">
                 <!-- Logo -->
                 <router-link :to="'/'">
@@ -26,7 +26,9 @@
                             </button>
                         </div>
                         <button type="button" class="btn create-btn" data-bs-toggle="modal"
-                            data-bs-target="#exampleModal">+ Thêm dự án</button>
+                            data-bs-target="#exampleModal">
+                            + Thêm dự án
+                        </button>
                         <div class="btn-icon">
                             <i class="bi bi-bar-chart-line-fill layout-icon"></i>
                         </div>
@@ -42,9 +44,20 @@
                                 <span class="switch-handle"></span>
                             </span>
                         </label>
-                        <button class="icon-btn">
-                            <i class="bi bi-people"></i>
-                        </button>
+                        <div class="dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                                <img v-if="avatar && avatar !== ''" :src="avatar" alt="Avatar" class="avatar-img" />
+                                <i v-else class="bi bi-people avatar-icon"></i>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item" href="/profile">Hồ sơ tài khoản</a></li>
+                                <li>
+                                    <hr class="dropdown-divider" />
+                                </li>
+                                <li><a class="dropdown-item" @click="logout" style="cursor: pointer;">Đăng xuất</a></li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -55,7 +68,9 @@
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="staticBackdropLabel" style="color: #042d62;">Thêm dự án mới</h1>
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel" style="color: #042d62">
+                        Thêm dự án mới
+                    </h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -70,7 +85,7 @@
                             </div>
                             <div class="mb-3">
                                 <label for="" class="form-label">Tiêu đề <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="">
+                                <input type="text" class="form-control" id="" />
                             </div>
                             <div class="mb-3">
                                 <label class="form-check-label" for="">Mô tả</label>
@@ -80,11 +95,11 @@
                         <div class="col-6 ps-3">
                             <div class="mb-3">
                                 <label class="form-label">Thời gian bắt đầu</label>
-                                <input type="date" class="form-control">
+                                <input type="date" class="form-control" />
                             </div>
                             <div class="mb-3">
                                 <label for="" class="form-label">Thời gian kết thúc</label>
-                                <input type="date" class="form-control">
+                                <input type="date" class="form-control" />
                             </div>
                             <div class="mb-3">
                                 <label class="form-label" for="">Trạng thái <span class="text-danger">*</span></label>
@@ -94,11 +109,12 @@
                                 </select>
                             </div>
                         </div>
-
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        Hủy
+                    </button>
                     <button type="submit" class="btn create-btn">Tạo mới</button>
                 </div>
             </div>
@@ -107,8 +123,48 @@
 </template>
 
 <script>
+import axios from "axios";
+import { onMounted, ref } from "vue";
+import { useRouter } from 'vue-router'
+import { toast } from "vue3-toastify";
+export default {
+    setup() {
+        const userString = localStorage.getItem("user");
+        const tokenString = localStorage.getItem("token");
+        const avatar = ref('');
+        const token = ref('');
+        const router = useRouter();
+        onMounted(() => {
+            const user = JSON.parse(userString);
+            avatar.value = user;
+            // console.log(avatar.value);
+            token.value = tokenString;
+            // console.log(token.value);
+        });
 
-
+        const logout = async () => {
+            try {
+                await axios.get('http://127.0.0.1:8000/api/logout', {
+                    headers: {
+                        Authorization: `Bearer ${token.value}`
+                    }
+                });
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                window.location.reload();
+                toast.success('Đăng xuất thành công!');
+            } catch (error) {
+                console.error(error);
+                toast.error('Đăng xuất thất bại!');
+            }
+        };
+        return {
+            avatar,
+            token,
+            logout
+        };
+    },
+};
 </script>
 <style scoped>
 .logo {
@@ -135,22 +191,23 @@
     transition: color 0.3s ease, transform 0.3s ease;
     cursor: pointer;
     background: #ffffff;
-    box-shadow: 5px 5px 10px #ecebeb,
-    ;
+    box-shadow: 5px 5px 10px #ecebeb;
 }
 
 .layout-icon {
     font-size: 25px;
 }
 
-.icon-btn {
+.avatar-img {
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
-    border: 1px solid #ddd;
-    background: none;
-    color: #333;
-    padding: 0.5rem;
-    transition: color 0.3s ease, transform 0.3s ease;
-    cursor: pointer;
+    object-fit: cover;
+}
+
+.avatar-icon {
+    font-size: 40px;
+    color: #555;
 }
 
 .icon-btn:hover {
