@@ -19,6 +19,7 @@ return new class extends Migration
             $table->boolean('is_group_project')->default(false);
             $table->date('start_date');
             $table->date('end_date');
+            $table->enum('status', ['Đang thực hiện', 'Hoàn thành', 'Quá hạn'])->default('Đang thực hiện');
             $table->timestamps();
         });
     }

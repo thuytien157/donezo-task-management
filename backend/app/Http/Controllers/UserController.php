@@ -57,7 +57,10 @@ class UserController extends Controller
         return response()->json(
             [
                 'message' => 'Đăng ký thành công',
-                'user' => $user->avatar,
+                'user' => [
+                    $user->avatar,
+                    $user->id
+                ],
                 'token' => $token
             ],
             201
@@ -101,7 +104,10 @@ class UserController extends Controller
         $token = $user->createToken('auth')->plainTextToken;
         return response()->json([
             'message' => 'Đăng nhập thành công!',
-            'user' => $user->avatar,
+            'user' => [
+                $user->avatar,
+                $user->id
+            ],
             'token' => $token
         ]);
     }
@@ -131,9 +137,9 @@ class UserController extends Controller
             $socialUser = Socialite::driver($provider)->stateless()->user();
             $user = User::where('email', $socialUser->getEmail())->first();
 
-            if ($user) {
-                return redirect("http://localhost:5173/login-success?error=" . urlencode('Email đã được đăng ký, vui lòng đăng nhập bằng mật khẩu hoặc phương thức khác.'));
-            }
+            // if ($user) {
+            //     return redirect("http://localhost:5173/login-success?error=" . urlencode('Email đã được đăng ký, vui lòng đăng nhập bằng mật khẩu hoặc phương thức khác.'));
+            // }
             if (!$user) {
                 $user = User::create([
                     'email' => $socialUser->getEmail(),
@@ -150,7 +156,7 @@ class UserController extends Controller
             //     'token' => $token,
             //     'user' => $user->avatar
             // ]);
-            return redirect("http://localhost:5173/login-success?token=$token&user=" . urlencode(json_encode($user->avatar)));
+            return redirect("http://localhost:5173/login-success?token=$token&user=" . urlencode(json_encode($user->avatar)) . '&id=' . $user->id);
         } catch (\Exception $e) {
             return response()->json([
                 'error' => 'Đăng nhập thất bại!',
@@ -162,7 +168,8 @@ class UserController extends Controller
     public function sendResetLink(Request $request)
     {
 
-        $validator = Validator::make($request->all(),
+        $validator = Validator::make(
+            $request->all(),
             [
                 'email' => 'required|email',
             ],
@@ -232,8 +239,8 @@ class UserController extends Controller
         return response()->json(
             [
                 'message' => 'Đặt lại mật khẩu thành công!',
-                'user'=> $user->avatar,
-                'token'=> $token,
+                'user' => $user->avatar,
+                'token' => $token,
             ]
         );
     }

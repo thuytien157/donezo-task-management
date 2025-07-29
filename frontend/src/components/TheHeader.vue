@@ -26,7 +26,7 @@
                             </button>
                         </div>
                         <button type="button" class="btn create-btn" data-bs-toggle="modal"
-                            data-bs-target="#exampleModal">
+                            data-bs-target="#exampleModal" @click="projectModalInstance = true">
                             + Thêm dự án
                         </button>
                         <div class="btn-icon">
@@ -51,11 +51,15 @@
                                 <i v-else class="bi bi-people avatar-icon"></i>
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                <li><a class="dropdown-item" href="/profile">Hồ sơ tài khoản</a></li>
+                                <li>
+                                    <a class="dropdown-item" href="/profile">Hồ sơ tài khoản</a>
+                                </li>
                                 <li>
                                     <hr class="dropdown-divider" />
                                 </li>
-                                <li><a class="dropdown-item" @click="logout" style="cursor: pointer;">Đăng xuất</a></li>
+                                <li>
+                                    <a class="dropdown-item" @click="logout" style="cursor: pointer">Đăng xuất</a>
+                                </li>
                             </ul>
                         </div>
                     </div>
@@ -63,61 +67,102 @@
             </div>
         </nav>
     </header>
-    <div class="modal fade" id="exampleModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div v-if="projectModalInstance" class="custom-backdrop"></div>
+    <div class="modal fade" id="exampleModal" data-bs-backdrop="false" data-bs-keyboard="false" tabindex="-1"
+        aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content">
+            <form class="modal-content" @submit.prevent="insertProject">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="staticBackdropLabel" style="color: #042d62">
                         Thêm dự án mới
                     </h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                        @click="projectModalInstance = false"></button>
                 </div>
+
                 <div class="modal-body">
-                    <form class="d-flex">
+                    <div class="d-flex">
                         <div class="col-6 border-end pe-3">
                             <div class="mb-3">
                                 <label class="form-label">Dự án <span class="text-danger">*</span></label>
-                                <select name="" id="" class="form-select">
-                                    <option value="">Cá nhân</option>
-                                    <option value="">Nhóm</option>
+                                <br>
+                                <small class="text-danger" v-if="
+                                    errors &&
+                                    errors.is_group_project &&
+                                    errors.is_group_project.length > 0
+                                ">
+                                    {{ errors.is_group_project[0] }}
+                                </small>
+
+                                <select class="form-select" v-model="is_group_project">
+                                    <option :value="false">Cá nhân</option>
+                                    <option :value="true">Nhóm</option>
                                 </select>
                             </div>
                             <div class="mb-3">
                                 <label for="" class="form-label">Tiêu đề <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="" />
+                                <br>
+                                <small class="text-danger" v-if="errors && errors.title && errors.title.length > 0">
+                                    {{ errors.title[0] }}
+                                </small>
+
+                                <input type="text" class="form-control" id="" v-model="title" />
                             </div>
                             <div class="mb-3">
                                 <label class="form-check-label" for="">Mô tả</label>
-                                <textarea name="" id="" cols="3" class="form-control"></textarea>
+                                <br>
+                                <small class="text-danger" v-if="
+                                    errors &&
+                                    errors.description &&
+                                    errors.description.length > 0
+                                ">
+                                    {{ errors.description[0] }}
+                                </small>
+                                <textarea name="" id="" cols="3" class="form-control" v-model="description"></textarea>
                             </div>
                         </div>
                         <div class="col-6 ps-3">
                             <div class="mb-3">
-                                <label class="form-label">Thời gian bắt đầu</label>
-                                <input type="date" class="form-control" />
+                                <label class="form-label">Thời gian bắt đầu</label><br>
+                                <small class="text-danger" v-if="
+                                    errors && errors.start_date && errors.start_date.length > 0
+                                ">
+                                    {{ errors.start_date[0] }}
+                                </small>
+                                <input type="date" class="form-control" v-model="start_date" :min="today" />
                             </div>
                             <div class="mb-3">
-                                <label for="" class="form-label">Thời gian kết thúc</label>
-                                <input type="date" class="form-control" />
+                                <label for="" class="form-label">Thời gian kết thúc</label><br>
+                                <small class="text-danger"
+                                    v-if="errors && errors.end_date && errors.end_date.length > 0">
+                                    {{ errors.end_date[0] }}
+                                </small>
+                                <input type="date" class="form-control" v-model="end_date" :min="today" />
                             </div>
                             <div class="mb-3">
-                                <label class="form-label" for="">Trạng thái <span class="text-danger">*</span></label>
-                                <select name="" id="" class="form-select">
-                                    <option value="">Cá nhân</option>
-                                    <option value="">Nhóm</option>
+                                <label class="form-label" for="">Trạng thái <span
+                                        class="text-danger">*</span></label><br>
+                                <small class="text-danger" v-if="errors && errors.status && errors.status.length > 0">
+                                    {{ errors.status[0] }}
+                                </small>
+                                <select name="" id="" class="form-select" v-model="status">
+                                    <option value="Đang thực hiện">Đang thực hiện</option>
                                 </select>
                             </div>
                         </div>
-                    </form>
+                    </div>
                 </div>
+
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                         Hủy
                     </button>
-                    <button type="submit" class="btn create-btn">Tạo mới</button>
+                    <button type="submit" class="create-btn" :class="{ loading: isLoading1 }">
+                        <span v-if="!isLoading1">Tạo mới</span>
+                        <span v-else class="spinner"></span>
+                    </button>
                 </div>
-            </div>
+            </form>
         </div>
     </div>
 </template>
@@ -125,43 +170,72 @@
 <script>
 import axios from "axios";
 import { onMounted, ref } from "vue";
-import { useRouter } from 'vue-router'
+import { useRouter } from "vue-router";
 import { toast } from "vue3-toastify";
+import { Project } from "./store/crudProject";
 export default {
     setup() {
         const userString = localStorage.getItem("user");
         const tokenString = localStorage.getItem("token");
-        const avatar = ref('');
-        const token = ref('');
-        const router = useRouter();
+        const avatar = ref("");
+        const token = ref("");
+
+        const {
+            isLoading1,
+            status,
+            end_date,
+            start_date,
+            is_group_project,
+            description,
+            title,
+            insertProject,
+            errors,
+            today,
+            projectModalInstance
+        } = Project.setup();
+
         onMounted(() => {
-            const user = JSON.parse(userString);
-            avatar.value = user;
-            // console.log(avatar.value);
-            token.value = tokenString;
-            // console.log(token.value);
+            if (userString && tokenString) {
+                const user = JSON.parse(userString);
+                avatar.value = JSON.parse(user.user);
+                // console.log(avatar.value);
+                token.value = tokenString;
+                // console.log(token.value);
+            }
         });
 
         const logout = async () => {
             try {
-                await axios.get('http://127.0.0.1:8000/api/logout', {
+                await axios.get("http://127.0.0.1:8000/api/logout", {
                     headers: {
-                        Authorization: `Bearer ${token.value}`
-                    }
+                        Authorization: `Bearer ${token.value}`,
+                    },
                 });
-                localStorage.removeItem('token');
-                localStorage.removeItem('user');
+                localStorage.removeItem("token");
+                localStorage.removeItem("user");
                 window.location.reload();
-                toast.success('Đăng xuất thành công!');
+                toast.success("Đăng xuất thành công!");
             } catch (error) {
                 console.error(error);
-                toast.error('Đăng xuất thất bại!');
+                toast.error("Đăng xuất thất bại!");
             }
         };
+
         return {
             avatar,
             token,
-            logout
+            logout,
+            isLoading1,
+            status,
+            end_date,
+            start_date,
+            is_group_project,
+            description,
+            title,
+            insertProject,
+            errors,
+            today,
+            projectModalInstance
         };
     },
 };
@@ -309,5 +383,47 @@ input:checked+.switch-bg .switch-handle {
 .create-btn {
     background-color: #042d62;
     color: #fff;
+    border: none;
+    padding: 6px 16px;
+    border-radius: 5px;
+    position: relative;
+    min-width: 90px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.create-btn .spinner {
+    border: 2px solid #fff;
+    border-top: 2px solid transparent;
+    border-radius: 50%;
+    width: 14px;
+    height: 14px;
+    animation: spin 0.6s linear infinite;
+    display: none;
+}
+
+.create-btn.loading .spinner {
+    display: inline-block;
+}
+
+.custom-backdrop {
+    position: fixed;
+    /* Đảm bảo nó che phủ toàn bộ màn hình */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    /* Nền đen mờ */
+    z-index: 1040;
+    /* Đặt z-index thấp hơn modal (thường là 1050) nhưng cao hơn nội dung khác */
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
 }
 </style>

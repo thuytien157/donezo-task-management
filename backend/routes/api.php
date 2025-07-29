@@ -1,6 +1,6 @@
 <?php
 
-
+use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -17,3 +17,4 @@ Route::get('/{provider}/redirect', [UserController::class, 'redirect']);
 Route::get('/{provider}/callback', [UserController::class, 'callback']);
 Route::post('/forgot-password', [UserController::class, 'sendResetLink']);
 Route::post('/reset-password', [UserController::class, 'resetPassword']);
+Route::resource('project', ProjectController::class);

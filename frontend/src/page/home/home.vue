@@ -1,42 +1,94 @@
 <template>
     <main class="container-fluid">
-        <!-- <div class="row">
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3 mt-2 mt-2">
-                <div class="card">
-                    <div class="card__skeleton card__title"></div>
-                    <div class="card__skeleton card__description"></div>
-                </div>
-            </div>
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3 mt-2 mt-2">
-                <div class="card">
-                    <div class="card__skeleton card__title"></div>
-                    <div class="card__skeleton card__description"></div>
-                </div>
-            </div>
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3 mt-2 mt-2">
-                <div class="card">
-                    <div class="card__skeleton card__title"></div>
-                    <div class="card__skeleton card__description"></div>
-                </div>
-            </div>
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3 mt-2 mt-2">
-                <div class="card">
-                    <div class="card__skeleton card__title"></div>
-                    <div class="card__skeleton card__description"></div>
-                </div>
-            </div>
-        </div> -->
 
         <h4 class="text-start pt-2">Dự án nhóm</h4>
+
+        <div class="row" v-if="isLoading">
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 mt-2 mt-2">
+                <div class="card">
+                    <div class="card__skeleton card__title"></div>
+                    <div class="card__skeleton card__description"></div>
+                </div>
+            </div>
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 mt-2 mt-2">
+                <div class="card">
+                    <div class="card__skeleton card__title"></div>
+                    <div class="card__skeleton card__description"></div>
+                </div>
+            </div>
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 mt-2 mt-2">
+                <div class="card">
+                    <div class="card__skeleton card__title"></div>
+                    <div class="card__skeleton card__description"></div>
+                </div>
+            </div>
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 mt-2 mt-2">
+                <div class="card">
+                    <div class="card__skeleton card__title"></div>
+                    <div class="card__skeleton card__description"></div>
+                </div>
+            </div>
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 mt-2 mt-2">
+                <div class="card">
+                    <div class="card__skeleton card__title"></div>
+                    <div class="card__skeleton card__description"></div>
+                </div>
+            </div>
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 mt-2 mt-2">
+                <div class="card">
+                    <div class="card__skeleton card__title"></div>
+                    <div class="card__skeleton card__description"></div>
+                </div>
+            </div>
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 mt-2 mt-2">
+                <div class="card">
+                    <div class="card__skeleton card__title"></div>
+                    <div class="card__skeleton card__description"></div>
+                </div>
+            </div>
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 mt-2 mt-2">
+                <div class="card">
+                    <div class="card__skeleton card__title"></div>
+                    <div class="card__skeleton card__description"></div>
+                </div>
+            </div>
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 mt-2 mt-2">
+                <div class="card">
+                    <div class="card__skeleton card__title"></div>
+                    <div class="card__skeleton card__description"></div>
+                </div>
+            </div>
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 mt-2 mt-2">
+                <div class="card">
+                    <div class="card__skeleton card__title"></div>
+                    <div class="card__skeleton card__description"></div>
+                </div>
+            </div>
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 mt-2 mt-2">
+                <div class="card">
+                    <div class="card__skeleton card__title"></div>
+                    <div class="card__skeleton card__description"></div>
+                </div>
+            </div>
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 mt-2 mt-2">
+                <div class="card">
+                    <div class="card__skeleton card__title"></div>
+                    <div class="card__skeleton card__description"></div>
+                </div>
+            </div>
+        </div>
+
         <div class="row">
             <router-link :to="'/project'" class="col-12 col-sm-6 col-md-4 col-lg-3 mt-2 text-decoration-none"
-                style="cursor: pointer;">
+                style="cursor: pointer;" v-for="project in projects" :key="project.id">
                 <div class="card rounded text-start">
-                    <h5>tên task</h5>
-                    <div class="fw-light" style="font-size: 14px;">mô tả</div>
-                    <div class="text-danger" style="font-size: 14px;"><i class="bi bi-list"></i>Deadline</div>
+                    <h5 style="color: #032f5c;">{{ project.title }}</h5>
+                    <div class="fw-light lh-lg" style="font-size: 14px;">{{ project.description }}</div>
+                    <div class="text-danger lh-lg" style="font-size: 14px;">Hạn chót: {{ formatDate(project.end_date) }}
+                    </div>
                     <div class="d-flex justify-content-between">
-                        <div class="text-info" style="font-size: 14px;">123 tác vụ</div>
+                        <div class="lh-lg" style="font-size: 14px; color: #032f5c;">{{ project.tasks_count }} tác vụ
+                        </div>
                         <div class="dropdown">
                             <button class="btn btn-sm btn-light" data-bs-toggle="dropdown">
                                 <i class="bi bi-three-dots-vertical"></i>
@@ -50,323 +102,55 @@
 
                 </div>
             </router-link>
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3 mt-2">
-                <div class="card rounded text-start">
-                    <h5>tên task</h5>
-                    <div class="fw-light" style="font-size: 14px;">mô tả</div>
-                    <div class="text-danger" style="font-size: 14px;"><i class="bi bi-list"></i>Deadline</div>
-                    <div class="d-flex justify-content-between">
-                        <div class="text-info" style="font-size: 14px;">123 tác vụ</div>
-                        <div class="dropdown">
-                            <button class="btn btn-sm btn-light" data-bs-toggle="dropdown">
-                                <i class="bi bi-three-dots-vertical"></i>
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a class="dropdown-item" href="#">Sơ đồ</a></li>
-                                <li><a class="dropdown-item" href="#">Xem chi tiết</a></li>
-                            </ul>
-                        </div>
-                    </div>
 
-                </div>
-            </div>
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3 mt-2">
-                <div class="card rounded text-start">
-                    <h5>tên task</h5>
-                    <div class="fw-light" style="font-size: 14px;">mô tả</div>
-                    <div class="text-danger" style="font-size: 14px;"><i class="bi bi-list"></i>Deadline</div>
-                    <div class="d-flex justify-content-between">
-                        <div class="text-info" style="font-size: 14px;">123 tác vụ</div>
-                        <div class="dropdown">
-                            <button class="btn btn-sm btn-light" data-bs-toggle="dropdown">
-                                <i class="bi bi-three-dots-vertical"></i>
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a class="dropdown-item" href="#">Sơ đồ</a></li>
-                                <li><a class="dropdown-item" href="#">Xem chi tiết</a></li>
-                            </ul>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3 mt-2">
-                <div class="card rounded text-start">
-                    <h5>tên task</h5>
-                    <div class="fw-light" style="font-size: 14px;">mô tả</div>
-                    <div class="text-danger" style="font-size: 14px;"><i class="bi bi-list"></i>Deadline</div>
-                    <div class="d-flex justify-content-between">
-                        <div class="text-info" style="font-size: 14px;">123 tác vụ</div>
-                        <div class="dropdown">
-                            <button class="btn btn-sm btn-light" data-bs-toggle="dropdown">
-                                <i class="bi bi-three-dots-vertical"></i>
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a class="dropdown-item" href="#">Sơ đồ</a></li>
-                                <li><a class="dropdown-item" href="#">Xem chi tiết</a></li>
-                            </ul>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3 mt-2">
-                <div class="card rounded text-start">
-                    <h5>tên task</h5>
-                    <div class="fw-light" style="font-size: 14px;">mô tả</div>
-                    <div class="text-danger" style="font-size: 14px;"><i class="bi bi-list"></i>Deadline</div>
-                    <div class="d-flex justify-content-between">
-                        <div class="text-info" style="font-size: 14px;">123 tác vụ</div>
-                        <div class="dropdown">
-                            <button class="btn btn-sm btn-light" data-bs-toggle="dropdown">
-                                <i class="bi bi-three-dots-vertical"></i>
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a class="dropdown-item" href="#">Sơ đồ</a></li>
-                                <li><a class="dropdown-item" href="#">Xem chi tiết</a></li>
-                            </ul>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3 mt-2">
-                <div class="card rounded text-start">
-                    <h5>tên task</h5>
-                    <div class="fw-light" style="font-size: 14px;">mô tả</div>
-                    <div class="text-danger" style="font-size: 14px;"><i class="bi bi-list"></i>Deadline</div>
-                    <div class="d-flex justify-content-between">
-                        <div class="text-info" style="font-size: 14px;">123 tác vụ</div>
-                        <div class="dropdown">
-                            <button class="btn btn-sm btn-light" data-bs-toggle="dropdown">
-                                <i class="bi bi-three-dots-vertical"></i>
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a class="dropdown-item" href="#">Sơ đồ</a></li>
-                                <li><a class="dropdown-item" href="#">Xem chi tiết</a></li>
-                            </ul>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3 mt-2">
-                <div class="card rounded text-start">
-                    <h5>tên task</h5>
-                    <div class="fw-light" style="font-size: 14px;">mô tả</div>
-                    <div class="text-danger" style="font-size: 14px;"><i class="bi bi-list"></i>Deadline</div>
-                    <div class="d-flex justify-content-between">
-                        <div class="text-info" style="font-size: 14px;">123 tác vụ</div>
-                        <div class="dropdown">
-                            <button class="btn btn-sm btn-light" data-bs-toggle="dropdown">
-                                <i class="bi bi-three-dots-vertical"></i>
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a class="dropdown-item" href="#">Sơ đồ</a></li>
-                                <li><a class="dropdown-item" href="#">Xem chi tiết</a></li>
-                            </ul>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3 mt-2">
-                <div class="card rounded text-start">
-                    <h5>tên task</h5>
-                    <div class="fw-light" style="font-size: 14px;">mô tả</div>
-                    <div class="text-danger" style="font-size: 14px;"><i class="bi bi-list"></i>Deadline</div>
-                    <div class="d-flex justify-content-between">
-                        <div class="text-info" style="font-size: 14px;">123 tác vụ</div>
-                        <div class="dropdown">
-                            <button class="btn btn-sm btn-light" data-bs-toggle="dropdown">
-                                <i class="bi bi-three-dots-vertical"></i>
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a class="dropdown-item" href="#">Sơ đồ</a></li>
-                                <li><a class="dropdown-item" href="#">Xem chi tiết</a></li>
-                            </ul>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3 mt-2">
-                <div class="card rounded text-start">
-                    <h5>tên task</h5>
-                    <div class="fw-light" style="font-size: 14px;">mô tả</div>
-                    <div class="text-danger" style="font-size: 14px;"><i class="bi bi-list"></i>Deadline</div>
-                    <div class="d-flex justify-content-between">
-                        <div class="text-info" style="font-size: 14px;">123 tác vụ</div>
-                        <div class="dropdown">
-                            <button class="btn btn-sm btn-light" data-bs-toggle="dropdown">
-                                <i class="bi bi-three-dots-vertical"></i>
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a class="dropdown-item" href="#">Sơ đồ</a></li>
-                                <li><a class="dropdown-item" href="#">Xem chi tiết</a></li>
-                            </ul>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3 mt-2">
-                <div class="card rounded text-start">
-                    <h5>tên task</h5>
-                    <div class="fw-light" style="font-size: 14px;">mô tả</div>
-                    <div class="text-danger" style="font-size: 14px;"><i class="bi bi-list"></i>Deadline</div>
-                    <div class="d-flex justify-content-between">
-                        <div class="text-info" style="font-size: 14px;">123 tác vụ</div>
-                        <div class="dropdown">
-                            <button class="btn btn-sm btn-light" data-bs-toggle="dropdown">
-                                <i class="bi bi-three-dots-vertical"></i>
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a class="dropdown-item" href="#">Sơ đồ</a></li>
-                                <li><a class="dropdown-item" href="#">Xem chi tiết</a></li>
-                            </ul>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3 mt-2">
-                <div class="card rounded text-start">
-                    <h5>tên task</h5>
-                    <div class="fw-light" style="font-size: 14px;">mô tả</div>
-                    <div class="text-danger" style="font-size: 14px;"><i class="bi bi-list"></i>Deadline</div>
-                    <div class="d-flex justify-content-between">
-                        <div class="text-info" style="font-size: 14px;">123 tác vụ</div>
-                        <div class="dropdown">
-                            <button class="btn btn-sm btn-light" data-bs-toggle="dropdown">
-                                <i class="bi bi-three-dots-vertical"></i>
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a class="dropdown-item" href="#">Sơ đồ</a></li>
-                                <li><a class="dropdown-item" href="#">Xem chi tiết</a></li>
-                            </ul>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3 mt-2">
-                <div class="card rounded text-start">
-                    <h5>tên task</h5>
-                    <div class="fw-light" style="font-size: 14px;">mô tả</div>
-                    <div class="text-danger" style="font-size: 14px;"><i class="bi bi-list"></i>Deadline</div>
-                    <div class="d-flex justify-content-between">
-                        <div class="text-info" style="font-size: 14px;">123 tác vụ</div>
-                        <div class="dropdown">
-                            <button class="btn btn-sm btn-light" data-bs-toggle="dropdown">
-                                <i class="bi bi-three-dots-vertical"></i>
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a class="dropdown-item" href="#">Sơ đồ</a></li>
-                                <li><a class="dropdown-item" href="#">Xem chi tiết</a></li>
-                            </ul>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3 mt-2">
-                <div class="card rounded text-start">
-                    <h5>tên task</h5>
-                    <div class="fw-light" style="font-size: 14px;">mô tả</div>
-                    <div class="text-danger" style="font-size: 14px;"><i class="bi bi-list"></i>Deadline</div>
-                    <div class="d-flex justify-content-between">
-                        <div class="text-info" style="font-size: 14px;">123 tác vụ</div>
-                        <div class="dropdown">
-                            <button class="btn btn-sm btn-light" data-bs-toggle="dropdown">
-                                <i class="bi bi-three-dots-vertical"></i>
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a class="dropdown-item" href="#">Sơ đồ</a></li>
-                                <li><a class="dropdown-item" href="#">Xem chi tiết</a></li>
-                            </ul>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3 mt-2">
-                <div class="card rounded text-start">
-                    <h5>tên task</h5>
-                    <div class="fw-light" style="font-size: 14px;">mô tả</div>
-                    <div class="text-danger" style="font-size: 14px;"><i class="bi bi-list"></i>Deadline</div>
-                    <div class="d-flex justify-content-between">
-                        <div class="text-info" style="font-size: 14px;">123 tác vụ</div>
-                        <div class="dropdown">
-                            <button class="btn btn-sm btn-light" data-bs-toggle="dropdown">
-                                <i class="bi bi-three-dots-vertical"></i>
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a class="dropdown-item" href="#">Sơ đồ</a></li>
-                                <li><a class="dropdown-item" href="#">Xem chi tiết</a></li>
-                            </ul>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3 mt-2">
-                <div class="card rounded text-start">
-                    <h5>tên task</h5>
-                    <div class="fw-light" style="font-size: 14px;">mô tả</div>
-                    <div class="text-danger" style="font-size: 14px;"><i class="bi bi-list"></i>Deadline</div>
-                    <div class="d-flex justify-content-between">
-                        <div class="text-info" style="font-size: 14px;">123 tác vụ</div>
-                        <div class="dropdown">
-                            <button class="btn btn-sm btn-light" data-bs-toggle="dropdown">
-                                <i class="bi bi-three-dots-vertical"></i>
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a class="dropdown-item" href="#">Sơ đồ</a></li>
-                                <li><a class="dropdown-item" href="#">Xem chi tiết</a></li>
-                            </ul>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3 mt-2">
-                <div class="card rounded text-start">
-                    <h5>tên task</h5>
-                    <div class="fw-light" style="font-size: 14px;">mô tả</div>
-                    <div class="text-danger" style="font-size: 14px;"><i class="bi bi-list"></i>Deadline</div>
-                    <div class="d-flex justify-content-between">
-                        <div class="text-info" style="font-size: 14px;">123 tác vụ</div>
-                        <div class="dropdown">
-                            <button class="btn btn-sm btn-light" data-bs-toggle="dropdown">
-                                <i class="bi bi-three-dots-vertical"></i>
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a class="dropdown-item" href="#">Sơ đồ</a></li>
-                                <li><a class="dropdown-item" href="#">Xem chi tiết</a></li>
-                            </ul>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
 
         </div>
 
     </main>
 </template>
-<script setup>
-import { ref } from 'vue'
+<script>
+import { Project } from '@/components/store/crudProject'
+import { onMounted, ref } from 'vue'
 
-const showMenu = ref(false)
+export default {
+    setup() {
+        const showMenu = ref(false)
 
-function toggleMenu() {
-    showMenu.value = !showMenu.value
+
+        function toggleMenu() {
+            showMenu.value = !showMenu.value
+        }
+
+        function closeMenu() {
+            showMenu.value = false
+        }
+
+        const {
+            projects,
+            isLoading,
+            formatDate,
+            getAllProject
+        } = Project.setup()
+
+        onMounted(async () => {
+            await getAllProject();
+        })
+
+
+        return {
+            showMenu,
+            toggleMenu,
+            closeMenu,
+            projects,
+            isLoading,
+            formatDate,
+        }
+    }
+
+
+
 }
 
-function closeMenu() {
-    showMenu.value = false
-}
 </script>
 <style scoped>
 .card {

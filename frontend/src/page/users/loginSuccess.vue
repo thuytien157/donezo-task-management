@@ -3,7 +3,7 @@
 </template>
 
 <script setup>
-import { onMounted } from "vue";
+import { onMounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { toast } from 'vue3-toastify'
 
@@ -12,26 +12,19 @@ const router = useRouter();
 
 onMounted(() => {
     const token = route.query.token;
-    const userStr = route.query.user;
-    const error = route.query.error;
 
-    if (error) {
-        toast.error(error);
-        setTimeout(() => {
-            router.push('/login');
-        }, 1500);
-        return;
-    }
+    const userStr = ref({
+        user: route.query.user,
+        id: route.query.id
+    });
 
-    if (token && userStr) {
+    if (token && userStr.value) {
         localStorage.setItem('token', token);
 
         try {
-            const user = JSON.parse(userStr);
-            localStorage.setItem('user', JSON.stringify(user));
+            localStorage.setItem('user', JSON.stringify(userStr.value));
         } catch (e) {
-            console.error('Lỗi parse user:', e);
-            localStorage.setItem('user', userStr);
+            console.error('Lỗi stringify user:', e);
         }
 
         toast.success("Đăng nhập thành công!");
@@ -42,4 +35,5 @@ onMounted(() => {
         router.push('/login');
     }
 });
+
 </script>
