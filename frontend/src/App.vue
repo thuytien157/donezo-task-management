@@ -21,5 +21,6 @@ import TheHeader from './components/TheHeader.vue'
 
 .content1 {
   padding-top: none;
+
 }
 </style>

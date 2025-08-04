@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\TaskStatusEnum;
+use App\Events\TaskUpdated;
 use App\Models\Project;
+use App\Models\Project_member;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Validator;
 
 class ProjectController extends Controller
@@ -14,7 +18,6 @@ class ProjectController extends Controller
     public function index()
     {
         $projects = Project::withCount('tasks')->get();
-
 
         return response()->json([
             'projects' => $projects
@@ -78,7 +81,16 @@ class ProjectController extends Controller
         $newproject->start_date = $request->start_date;
         $newproject->end_date = $request->end_date;
         $newproject->status = $request->status;
-        $newproject->save();
+
+        if ($newproject->save()) {
+            $projectMember = new Project_member();
+            $projectMember->project_id = $newproject->id;
+            $projectMember->user_id = $request->owner_id;
+            $projectMember->role = 'leader';
+            $projectMember->joined_at = Carbon::now();
+            $projectMember->save();
+        }
+
 
         return response()->json([
             'message' => 'Thêm dự án thành công',
@@ -90,15 +102,41 @@ class ProjectController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $project = Project::with('tasks.creator', 'tasks.assignees', 'users')->find($id);
+        if (!$project) {
+            return response()->json([
+                'message' => 'Dự án không tồn tại'
+            ], 404);
+        };
+        $list = $project->tasks;
+        $grouped = $list->groupBy('status');
+
+        foreach (TaskStatusEnum::cases() as $key => $value) {
+            $status = $value->value;
+            $taskByStatus[$status] = $grouped->get($status, collect());
+        }
+
+        $members = $project->users;
+        $membersWithRole = $members->sortBy(function ($user) {
+            return $user->pivot->role === 'leader' ? 0 : 1;
+        })->values();
+
+        return response()->json([
+            'tasks_by_status' => $taskByStatus,
+            'member' => $membersWithRole,
+            'project_name' => $project->title
+        ], 200);
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
-    {
-        //
+    public function edit(string $id) {
+        $project = Project::find($id);
+
+        return response()->json([
+            'project' => $project
+        ]);
     }
 
     /**
@@ -106,7 +144,10 @@ class ProjectController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $project = Project::find($id);
+
+        $project->description = $request->description;
+        $project->save();
     }
 
     /**

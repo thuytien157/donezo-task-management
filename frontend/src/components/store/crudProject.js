@@ -2,21 +2,30 @@ import { onMounted, ref } from "vue";
 import axios from "axios";
 import { Modal } from "bootstrap";
 import { toast } from "vue3-toastify";
+import Pusher from "pusher-js";
 export const Project = {
   setup() {
     const projects = ref([]);
     const isLoading = ref(false);
     const projectModalInstance = ref(false);
-
+    const groupProjects = ref([]);
+    const personalProjects = ref([]);
     const getAllProject = async () => {
       try {
         isLoading.value = true;
         const res = await axios.get("http://127.0.0.1:8000/api/project");
         projects.value = res.data.projects;
-        // console.log(res.data);
+        groupProjects.value = projects.value.filter(
+          (project) => project.is_group_project == 1
+        );
+        // console.log(groupProjects.value);
 
+        personalProjects.value = projects.value.filter(
+          (project) => project.is_group_project == 0
+        );
         isLoading.value = false;
       } catch (error) {
+        isLoading.value = false;
         console.log(error);
       }
     };
@@ -38,12 +47,7 @@ export const Project = {
     const errors = ref({});
     const id = ref(0);
     const userString = localStorage.getItem("user");
-    onMounted(() => {
-      if (userString) {
-        const user = JSON.parse(userString);
-        id.value = JSON.parse(user.id);
-      }
-    });
+
     const insertProject = async () => {
       try {
         const res = await axios.post("http://127.0.0.1:8000/api/project", {
@@ -55,12 +59,15 @@ export const Project = {
           end_date: end_date.value,
           status: status.value,
         });
-        await getAllProject();
-        const modal = document.getElementById("exampleModal");
+
+        const modal = document.getElementById("exampleModal1");
         const modalInstance = Modal.getInstance(modal);
-        modalInstance.hide();
+        if (modalInstance) {
+          modalInstance.hide();
+        }
         projectModalInstance.value = false;
         toast.success("Thêm thành công");
+
         errors.value = {};
       } catch (error) {
         if (error.response && error.response.status === 422) {
@@ -69,6 +76,38 @@ export const Project = {
       }
     };
 
+    const project = ref({});
+    const getProjectById = async (id) => {
+      isLoading.value = true;
+      try {
+        const res = await axios.get(
+          `http://127.0.0.1:8000/api/project/${id}/edit`
+        );
+        project.value = res.data.project;
+        description.value = res.data.project.description;
+        isLoading.value = false;
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    const editProjectById = async (id) => {
+      isLoading.value = true;
+      try {
+        const res = await axios.put(`http://127.0.0.1:8000/api/project/${id}`, {
+          description: description.value,
+        });
+        isLoading.value = false;
+        toast.success("Sửa thành công");
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    onMounted(() => {
+      if (userString) {
+        const user = JSON.parse(userString);
+        id.value = JSON.parse(user.id);
+      }
+    });
     return {
       projects,
       isLoading,
@@ -86,6 +125,11 @@ export const Project = {
       today,
       id,
       projectModalInstance,
+      personalProjects,
+      groupProjects,
+      getProjectById,
+      project,
+      editProjectById,
     };
   },
 };

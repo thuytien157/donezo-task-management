@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
             projects::class,
             tasks::class,
             project_members::class,
+            task_assignees::class,
         ]);
     }
 }

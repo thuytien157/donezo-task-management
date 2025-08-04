@@ -15,11 +15,11 @@ return new class extends Migration
             $table->id();
             $table->foreignId('owner_id')->constrained('users')->onDelete('cascade');
             $table->string('title');
-            $table->string('description')->nullable();
+            $table->text('description')->nullable();
             $table->boolean('is_group_project')->default(false);
             $table->date('start_date');
             $table->date('end_date');
-            $table->enum('status', ['Đang thực hiện', 'Hoàn thành', 'Quá hạn'])->default('Đang thực hiện');
+            $table->enum('status', ['Chưa bắt đầu', 'Đang thực hiện', 'Hoàn thành'])->default('Đang thực hiện');
             $table->timestamps();
         });
     }

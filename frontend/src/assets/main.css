@@ -1,9 +1,15 @@
 @import './base.css';
 
-#app{
-    background-color: #fafafa;
+html, body {
+  height: 100%;
+  margin: 0 auto; /* Loại bỏ margin mặc định của body */
+  padding: 0; /* Loại bỏ padding mặc định */
 }
 
-
-
-
+#app {
+  height: 100%;
+  width: 100%;
+  background-color: #fafafa;
+  margin: 0 auto;
+  max-width: 1500px;
+}

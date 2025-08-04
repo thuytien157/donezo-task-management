@@ -12,20 +12,30 @@ const routes = [
     redirect: "/home",
   },
   {
-    path: "/project",
+    path: "/projects/:projectId/tasks",
     component: () => import("../page/projects/project-detail.vue"),
     meta: { requiresAuth: true },
+    props: true,
   },
   {
-    path: "/task",
+    path: "/projects/new",
+    component: () => import("../page/projects/project-add.vue"),
+    meta: { requiresAuth: true },
+    props: true,
+  },
+  {
+    path: "/projects/:projectId/tasks/:taskId",
     component: () => import("../page/tasks/task-detail.vue"),
     meta: { requiresAuth: true },
+    props: true,
   },
   {
-    path: "/task/new",
-    component: () => import("../page/tasks/task-insert.vue"),
+    path: "/projects/:projectId",
+    component: () => import("../page/projects/project-infomation.vue"),
     meta: { requiresAuth: true },
+    props: true,
   },
+
   {
     path: "/register",
     component: () => import("../page/users/register.vue"),
@@ -38,7 +48,7 @@ const routes = [
   },
   {
     path: "/login-success",
-    component: () => import("../page/users/LoginSuccess.vue"),
+    component: () => import("../page/users/loginSuccess.vue"),
   },
   {
     path: "/forgot-password",
@@ -48,6 +58,11 @@ const routes = [
   {
     path: "/reset-password",
     component: () => import("../page/users/resetPassword.vue"),
+    meta: { hideHeader: true },
+  },
+  {
+    path: "/invite",
+    component: () => import("../page/users/acceptInvite.vue"),
     meta: { hideHeader: true },
   },
 ];
