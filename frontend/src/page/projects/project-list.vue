@@ -1,6 +1,22 @@
 <template>
   <main class="container-fluid">
-    <h4 class="text-start pt-2">Dự án nhóm</h4>
+    <div class="d-flex justify-content-between align-items-center">
+      <h4 class="text-start pt-2">Dự án nhóm</h4>
+      <nav v-if="groupProjects.length > itemsPerPage" aria-label="Group projects pagination">
+        <ul class="pagination pagination-sm my-2">
+          <li class="page-item" :class="{ disabled: currentPageGroup === 1 }">
+            <a class="page-link" href="#" @click.prevent="currentPageGroup--">Trước</a>
+          </li>
+          <li class="page-item" v-for="page in totalPagesGroup" :key="page"
+            :class="{ active: page === currentPageGroup }">
+            <a class="page-link" href="#" @click.prevent="currentPageGroup = page">{{ page }}</a>
+          </li>
+          <li class="page-item" :class="{ disabled: currentPageGroup === totalPagesGroup }">
+            <a class="page-link" href="#" @click.prevent="currentPageGroup++">Sau</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
     <div class="row" v-if="isLoading">
       <div class="col-12 col-sm-6 col-md-4 col-lg-3 mt-2" v-for="n in 12" :key="n">
         <div class="card">
@@ -11,8 +27,8 @@
         </div>
       </div>
     </div>
-    <div class="row" v-else>
-      <div class="col-12 col-sm-6 col-md-4 col-lg-3 mt-2" v-for="project in groupProjects" :key="project.id">
+    <div class="row" v-else style="min-height: 300px;">
+      <div class="col-12 col-sm-6 col-md-4 col-lg-3 mt-2" v-for="project in paginatedGroupProjects" :key="project.id">
         <div class="card rounded text-start">
           <router-link :to="`/projects/${project.id}/tasks`" class="text-decoration-none">
             <h5 style="color: #032f5c">{{ project.title }}</h5>
@@ -39,18 +55,36 @@
                   <router-link class="dropdown-item" :to="`/projects/${project.id}`">Thông tin</router-link>
                 </li>
                 <li>
-                  <router-link class="dropdown-item" :to="`/projects/${project.id}/charts`">Biểu đồ</router-link>
+                  <div class="dropdown-item" >Biểu đồ</div>
                 </li>
               </ul>
             </div>
           </div>
         </div>
       </div>
+      <div v-if="groupProjects.length == 0" class="text-center">Không có dự án nào</div>
     </div>
+
 
     <hr class="my-4" />
 
-    <h4 class="text-start pt-2">Dự án cá nhân</h4>
+    <div class="d-flex justify-content-between align-items-center">
+      <h4 class="text-start pt-2">Dự án cá nhân</h4>
+      <nav v-if="personalProjects.length > itemsPerPage" aria-label="Personal projects pagination">
+        <ul class="pagination pagination-sm my-2">
+          <li class="page-item" :class="{ disabled: currentPagePersonal === 1 }">
+            <a class="page-link" href="#" @click.prevent="currentPagePersonal--">Trước</a>
+          </li>
+          <li class="page-item" v-for="page in totalPagesPersonal" :key="page"
+            :class="{ active: page === currentPagePersonal }">
+            <a class="page-link" href="#" @click.prevent="currentPagePersonal = page">{{ page }}</a>
+          </li>
+          <li class="page-item" :class="{ disabled: currentPagePersonal === totalPagesPersonal }">
+            <a class="page-link" href="#" @click.prevent="currentPagePersonal++">Sau</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
     <div class="row" v-if="isLoading">
       <div class="col-12 col-sm-6 col-md-4 col-lg-3 mt-2" v-for="n in 12" :key="n">
         <div class="card">
@@ -62,7 +96,8 @@
       </div>
     </div>
     <div class="row" v-else>
-      <div class="col-12 col-sm-6 col-md-4 col-lg-3 mt-2" v-for="project in personalProjects" :key="project.id">
+      <div class="col-12 col-sm-6 col-md-4 col-lg-3 mt-2" v-for="project in paginatedPersonalProjects"
+        :key="project.id">
         <div class="card rounded text-start">
           <router-link :to="`/projects/${project.id}/tasks`" class="text-decoration-none">
             <h5 style="color: #032f5c">{{ project.title }}</h5>
@@ -89,24 +124,29 @@
                   <router-link class="dropdown-item" :to="`/projects/${project.id}`">Thông tin</router-link>
                 </li>
                 <li>
-                  <router-link class="dropdown-item" :to="`/projects/${project.id}/charts`">Biểu đồ</router-link>
+                  <div class="dropdown-item" >Biểu đồ</div>
                 </li>
               </ul>
             </div>
           </div>
         </div>
       </div>
+      <div v-if="personalProjects.length == 0" class="text-center">Không có dự án nào</div>
     </div>
+
+
   </main>
 </template>
 <script>
 import { Project } from "@/components/store/crudProject";
-import { onMounted, onUnmounted, ref } from "vue";
+import { computed, onMounted, onUnmounted, ref } from "vue";
 
 export default {
   setup() {
     const activeMenuId = ref(null);
-
+    const itemsPerPage = 8;
+    const currentPageGroup = ref(1);
+    const currentPagePersonal = ref(1)
     function toggleMenuByProjectId(projectId) {
       if (activeMenuId.value === projectId) {
         activeMenuId.value = null;
@@ -132,6 +172,34 @@ export default {
       getAllProject,
     } = Project.setup();
 
+
+    const totalPagesGroup = computed(() => {
+      return Math.ceil(groupProjects.value.length / itemsPerPage);
+    });
+
+    const paginatedGroupProjects = computed(() => {
+      const start = (currentPageGroup.value - 1) * itemsPerPage;
+      const end = start + itemsPerPage;
+      return groupProjects.value.slice(start, end);
+    });
+
+    const totalPagesPersonal = computed(() => {
+      return Math.ceil(personalProjects.value.length / itemsPerPage);
+    });
+
+    const paginatedPersonalProjects = computed(() => {
+      const start = (currentPagePersonal.value - 1) * itemsPerPage;
+      const end = start + itemsPerPage;
+      return personalProjects.value.slice(start, end);
+    });
+
+    function setPage(type, page) {
+      if (type === 'group') {
+        currentPageGroup.value = page;
+      } else {
+        currentPagePersonal.value = page;
+      }
+    }
     onMounted(async () => {
       await getAllProject();
       document.addEventListener("click", closeMenuOnClickOutside);
@@ -146,9 +214,17 @@ export default {
       toggleMenuByProjectId,
       isLoading,
       formatDate,
-      groupProjects,
-      personalProjects,
+      paginatedGroupProjects,
+      paginatedPersonalProjects,
       getAllProject,
+      itemsPerPage,
+      currentPageGroup,
+      currentPagePersonal,
+      totalPagesGroup,
+      totalPagesPersonal,
+      setPage,
+      groupProjects,
+      personalProjects
     };
   },
 };

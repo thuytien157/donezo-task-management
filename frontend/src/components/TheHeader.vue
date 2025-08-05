@@ -164,12 +164,9 @@ import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import { toast } from "vue3-toastify";
 import { Project } from "./store/crudProject";
+import { useTokenUser } from "./store/useTokenUser";
 export default {
-    setup() {
-        const userString = localStorage.getItem("user");
-        const tokenString = localStorage.getItem("token");
-        const avatar = ref("");
-        const token = ref("");
+    setup() { 
         const showDropdown = ref(false);
         function toggleDropdown() {
             showDropdown.value = !showDropdown.value;
@@ -188,16 +185,11 @@ export default {
             projectModalInstance,
         } = Project.setup();
 
-        onMounted(() => {
-            if (userString && tokenString) {
-                const user = JSON.parse(userString);
-                avatar.value = JSON.parse(user.user);
-                // console.log(avatar.value);
-                token.value = tokenString;
-                // console.log(token.value);
-            }
-        });
-
+        const {
+            avatar,
+            token
+        } = useTokenUser()
+        
         const logout = async () => {
             try {
                 await axios.get("http://127.0.0.1:8000/api/logout", {

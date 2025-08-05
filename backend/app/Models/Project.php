@@ -32,4 +32,8 @@ class Project extends Model
     {
         return $this->belongsToMany(User::class, 'project_members')->withPivot('role');
     }
+
+    public function creator(){
+        return $this->belongsTo(User::class, 'owner_id');
+    }
 }

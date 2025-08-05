@@ -68,7 +68,7 @@
             </div>
         </main>
 
-        <main class="task-content p-3 m-md-4" style="background-color: white">
+        <main v-else class="task-content p-3 m-md-4" style="background-color: white">
             <div class="row">
                 <form class="col-12" @submit.prevent="editProjectById(projectId)">
                     <div class="d-flex align-items-center mb-3 flex-wrap">
@@ -95,7 +95,6 @@
                                 {{ errors.is_group_project[0] }}
                             </small>
                         </div>
-
                         <div class="task-info-row">
                             <div class="task-info-label">Thời gian bắt đầu</div>
 
@@ -131,6 +130,20 @@
                                 {{ errors.status[0] }}
                             </small>
                         </div>
+
+                        <div class="task-info-row">
+                            <div class="task-info-label">Trưởng dự án</div>
+                            <div class="d-flex align-items-center">
+                                <img :src="creator.avatar" alt="" srcset="" class="member-avatar" />
+                                <div class="member-info">
+                                    <p class="mb-0 member-name">{{ creator.email }} <span
+                                            class="text-muted">(bạn)</span></p>
+                                </div>
+                            </div>
+
+
+                        </div>
+
                     </div>
                     <div class="fs-6 mb-2">Mô tả chi tiết</div>
                     <QuillEditor ref="quillRef" v-model:content="description" :toolbar="toolbarOptions"
@@ -161,7 +174,7 @@ export default {
         },
     },
     setup(props) {
-        const { isLoading, errors, today, project, getProjectById, description, editProjectById } =
+        const { isLoading, errors, today, project, getProjectById, description, editProjectById, creator } =
             Project.setup();
         const editableDivRef = ref(null);
         const quillRef = ref(null);
@@ -203,12 +216,31 @@ export default {
             errors,
             today,
             project,
+            creator
         };
     },
 };
 </script>
 <style scoped>
-/* Định nghĩa các biến CSS để dễ dàng tùy chỉnh sau này */
+.member-info .member-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #172b4d;
+}
+
+.member-avatar {
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    font-size: 12px;
+    margin-right: 10px;
+}
+
 :root {
     --primary-color: #042d62;
     --secondary-color: #f8f9fa;

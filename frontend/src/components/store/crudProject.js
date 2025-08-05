@@ -3,6 +3,7 @@ import axios from "axios";
 import { Modal } from "bootstrap";
 import { toast } from "vue3-toastify";
 import Pusher from "pusher-js";
+import { useTokenUser } from "./useTokenUser";
 export const Project = {
   setup() {
     const projects = ref([]);
@@ -10,10 +11,16 @@ export const Project = {
     const projectModalInstance = ref(false);
     const groupProjects = ref([]);
     const personalProjects = ref([]);
+    const { token } = useTokenUser();
+
     const getAllProject = async () => {
       try {
         isLoading.value = true;
-        const res = await axios.get("http://127.0.0.1:8000/api/project");
+        const res = await axios.get("http://127.0.0.1:8000/api/project", {
+          headers: {
+            Authorization: `Bearer ${token.value}`,
+          },
+        });
         projects.value = res.data.projects;
         groupProjects.value = projects.value.filter(
           (project) => project.is_group_project == 1
@@ -50,15 +57,23 @@ export const Project = {
 
     const insertProject = async () => {
       try {
-        const res = await axios.post("http://127.0.0.1:8000/api/project", {
-          owner_id: id.value,
-          title: title.value,
-          description: description.value,
-          is_group_project: is_group_project.value,
-          start_date: start_date.value,
-          end_date: end_date.value,
-          status: status.value,
-        });
+        const res = await axios.post(
+          "http://127.0.0.1:8000/api/project",
+          {
+            owner_id: id.value,
+            title: title.value,
+            description: description.value,
+            is_group_project: is_group_project.value,
+            start_date: start_date.value,
+            end_date: end_date.value,
+            status: status.value,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token.value}`,
+            },
+          }
+        );
 
         const modal = document.getElementById("exampleModal1");
         const modalInstance = Modal.getInstance(modal);
@@ -77,13 +92,22 @@ export const Project = {
     };
 
     const project = ref({});
+    const creator = ref({});
     const getProjectById = async (id) => {
       isLoading.value = true;
       try {
         const res = await axios.get(
-          `http://127.0.0.1:8000/api/project/${id}/edit`
+          `http://127.0.0.1:8000/api/project/${id}/edit`,
+          {
+            headers: {
+              Authorization: `Bearer ${token.value}`,
+            },
+          }
         );
         project.value = res.data.project;
+        creator.value = res.data.project.creator;
+        // console.log(project.value.creator.avatar);
+
         description.value = res.data.project.description;
         isLoading.value = false;
       } catch (error) {
@@ -93,21 +117,24 @@ export const Project = {
     const editProjectById = async (id) => {
       isLoading.value = true;
       try {
-        const res = await axios.put(`http://127.0.0.1:8000/api/project/${id}`, {
-          description: description.value,
-        });
+        const res = await axios.put(
+          `http://127.0.0.1:8000/api/project/${id}`,
+          {
+            description: description.value,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token.value}`,
+            },
+          }
+        );
         isLoading.value = false;
         toast.success("Sửa thành công");
       } catch (error) {
         console.log(error);
       }
     };
-    onMounted(() => {
-      if (userString) {
-        const user = JSON.parse(userString);
-        id.value = JSON.parse(user.id);
-      }
-    });
+
     return {
       projects,
       isLoading,
@@ -130,6 +157,8 @@ export const Project = {
       getProjectById,
       project,
       editProjectById,
+      creator,
+      token,
     };
   },
 };

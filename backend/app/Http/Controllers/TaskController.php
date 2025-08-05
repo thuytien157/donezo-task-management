@@ -81,6 +81,7 @@ class TaskController extends Controller
             $task->title = $request->title;
             $task->status = $request->status;
             $task->deadline = $request->deadline;
+            $task->description = $request->description;
             $task->save();
 
             if ($request->has('user_id') && is_array($request->user_id)) {

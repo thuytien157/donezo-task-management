@@ -20,7 +20,7 @@ Route::get('/{provider}/redirect', [UserController::class, 'redirect']);
 Route::get('/{provider}/callback', [UserController::class, 'callback']);
 Route::post('/forgot-password', [UserController::class, 'sendResetLink']);
 Route::post('/reset-password', [UserController::class, 'resetPassword']);
-Route::resource('project', ProjectController::class);
+Route::resource('project', ProjectController::class)->middleware('auth:sanctum');;
 Route::put('/task/update-status', [TaskController::class, 'updateStatus']);
 Route::put('/task/update-description', [TaskController::class, 'updateDescription']);
 Route::post('/task/upload-image', [TaskController::class, 'uploadImage']);

@@ -1,8 +1,8 @@
 <template>
     <div class="task-detail-page container-fluid p-0">
-        <header v-if="loading"
+        <header v-if="isLoading"
             class="task-detail-header d-flex flex-column flex-md-row align-items-md-center justify-content-between px-4 py-3 border-bottom">
-            <div class="d-flex align-items-start align-items-md-center mb-3 mb-md-0 flex-column flex-md-row">
+            <div class="d-flex align-items-start align-items-md-center  flex-column flex-md-row">
                 <div class="skeleton-box skeleton-btn me-md-3 mb-2 mb-md-0"></div>
                 <div class="d-flex flex-column align-items-start">
                     <div class="skeleton-box skeleton-breadcrumb"></div>
@@ -21,8 +21,7 @@
 
         <header v-else
             class="task-detail-header d-flex flex-column flex-md-row align-items-md-center justify-content-between px-4 py-3 border-bottom">
-            <div class="d-flex align-items-start align-items-md-center mb-3 mb-md-0 flex-column flex-md-row">
-                <router-link :to="'task/new'" class="btn create-btn-new me-md-3 mb-2 mb-md-0">Mới</router-link>
+            <div class="d-flex align-items-start align-items-md-center flex-column flex-md-row">
                 <div class="d-flex flex-column align-items-start">
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb mb-0 custom-breadcrumb-ol">
@@ -32,53 +31,64 @@
                             </li>
                             <li class="breadcrumb-item">
                                 <router-link :to="`/projects/${projectId}/tasks`"
-                                    class="text-decoration-none text-secondary fw-semibold small">Nhiệm vụ</router-link>
+                                    class="text-decoration-none text-secondary fw-semibold small">Nhiệm vụ
+                                </router-link>
                             </li>
                         </ol>
                     </nav>
-                    <div class="text-dark fw-semibold task-main-title">
-                        {{ task.title }}
+                </div>
+            </div>
+
+            <div class="d-none d-lg-flex align-items-center gap-2">
+                <div class="status-tag" :class="{ 'status-done': status === 'Việc cần làm' }"
+                    @click="status = 'Việc cần làm'">
+                    Việc cần làm
+                </div>
+                <div class="status-tag" :class="{ 'status-done': status === 'Phân tích' }"
+                    @click="status = 'Phân tích'">
+                    Phân tích
+                </div>
+                <div class="status-tag" :class="{ 'status-done': status === 'Thực hiện' }"
+                    @click="status = 'Thực hiện'">
+                    Thực hiện
+                </div>
+                <div class="status-tag" :class="{ 'status-done': status === 'Kiểm thử' }" @click="status = 'Kiểm thử'">
+                    Kiểm thử
+                </div>
+                <div class="status-tag" :class="{ 'status-done': status === 'Hoàn tất' }" @click="status = 'Hoàn tất'">
+                    Hoàn tất
+                </div>
+                <div class="status-tag" :class="{ 'status-done': status === 'Hủy bỏ' }" @click="status = 'Hủy bỏ'">
+                    Hủy bỏ
+                </div>
+            </div>
+
+            <div
+                class="d-flex d-lg-none align-items-center gap-2 w-100 justify-content-between status-mobile-container">
+                <div class="dropdown">
+                    <button class="btn btn-sm btn-light border dropdown-toggle" type="button"
+                        @click="toggleStatusDropdown">
+                        Trạng thái
+                    </button>
+                    <div class="dropdown-menu" :class="{ 'show': showStatusDropdown }">
+                        <a class="dropdown-item" :class="{ 'active': status === 'Việc cần làm' }"
+                            @click="status = 'Việc cần làm'">Việc cần làm</a>
+                        <a class="dropdown-item" :class="{ 'active': status === 'Phân tích' }"
+                            @click="status = 'Phân tích'">Phân tích</a>
+                        <a class="dropdown-item" :class="{ 'active': status === 'Thực hiện' }"
+                            @click="status = 'Thực hiện'">Thực hiện</a>
+                        <a class="dropdown-item" :class="{ 'active': status === 'Kiểm thử' }"
+                            @click="status = 'Kiểm thử'">Kiểm thử</a>
+                        <a class="dropdown-item" :class="{ 'active': status === 'Hoàn tất' }"
+                            @click="status = 'Hoàn tất'">Hoàn tất</a>
+                        <a class="dropdown-item" :class="{ 'active': status === 'Hủy bỏ' }"
+                            @click="status = 'Hủy bỏ'">Hủy bỏ</a>
                     </div>
                 </div>
             </div>
-            <div class="d-flex align-items-center gap-2">
-                <div class="status-tag" :class="{ 'status-done': currentStatus === 'Việc cần làm' }"
-                    @click="handleStatusChange('Việc cần làm')">
-                    Việc cần làm <span class="status-count"></span>
-                </div>
-                <div class="status-tag" :class="{ 'status-done': currentStatus === 'Phân tích' }"
-                    @click="handleStatusChange('Phân tích')">
-                    Phân tích
-                </div>
-                <div class="status-tag" :class="{ 'status-done': currentStatus === 'Thực hiện' }"
-                    @click="handleStatusChange('Thực hiện')">
-                    Thực hiện
-                </div>
-                <div class="status-tag" :class="{ 'status-done': currentStatus === 'Kiểm thử' }"
-                    @click="handleStatusChange('Kiểm thử')">
-                    Kiểm thử
-                </div>
-                <div class="status-tag" :class="{ 'status-done': currentStatus === 'Hoàn tất' }"
-                    @click="handleStatusChange('Hoàn tất')">
-                    Hoàn tất
-                </div>
-                <div class="status-tag" :class="{ 'status-done': currentStatus === 'Hủy bỏ' }"
-                    @click="handleStatusChange('Hủy bỏ')">
-                    Hủy bỏ
-                </div>
-                <span class="text-muted small me-1">1 / 1</span>
-                <router-link :to="`/projects/${projectId}/tasks/${prevTaskId}`"
-                    class="btn btn-sm btn-light border text-secondary px-2 py-0">
-                    <i class="bi bi-chevron-left"></i>
-                </router-link>
-                <router-link :to="`/projects/${projectId}/tasks/${nextTaskId}`"
-                    class="btn btn-sm btn-light border text-secondary px-2 py-0">
-                    <i class="bi bi-chevron-right"></i>
-                </router-link>
-            </div>
         </header>
 
-        <main v-if="loading" class="task-content p-3 m-md-4" style="background-color: white;">
+        <main v-if="isLoading" class="task-content p-3 m-md-4" style="background-color: white">
             <div class="row">
                 <div class="col-12">
                     <div class="d-flex align-items-center mb-3 flex-wrap">
@@ -146,247 +156,228 @@
             </div>
         </main>
 
-        <main v-else class="task-content p-3 m-md-4" style="background-color: white;">
+        <main v-else class="task-content p-3 m-md-4" style="background-color: white">
             <div class="row">
-                <div class="col-12">
-                    <div class="d-flex align-items-center mb-3 flex-wrap">
-                        <input class="mb-0 fw-medium input" style="font-size: 2rem; color: #333;" v-model="title"
-                            @change="editTaskById" />
+                <form class="col-12" @submit.prevent="insertTask(projectId)">
+                    <small class="text-danger" v-if="
+                        errors && errors.title && errors.title.length > 0
+                    ">
+                        {{ errors.title[0] }}
+                    </small>
+                    <div class="d-flex align-items-center mb-1 flex-column align-items-start">
+
+                        <input class="mb-0 fw-medium input" style="font-size: 1.5rem; color: #333; padding: 5px"
+                            v-model="title" placeholder="Nhập tiêu đề nhiệm vụ tại đây.." />
+
                     </div>
 
-                    <div class="task-info-grid mb-4">
+                    <div class="task-info-grid mb-4 mt-3">
                         <div class="task-info-row">
                             <div class="task-info-label">Dự án</div>
-                            <div class="task-info-value fw-semibold">{{ project.title }}</div>
+                            <div class="task-info-value fw-semibold">{{ project_name }}</div>
                         </div>
                         <div class="task-info-row">
                             <div class="task-info-label">Người được phân công</div>
                             <div class="task-info-value d-flex align-items-center">
-                                <multiselect v-if="editing1" v-model="selectedMembers" :options="member"
-                                    :multiple="true" :close-on-select="false" :clear-on-select="false"
-                                    :preserve-search="true" placeholder="Chọn người được phân công" label="email"
-                                    track-by="id" :preselect-first="false" :taggable="true">
-                                    <template slot="tag" slot-scope="{ option, remove }">
-                                        <span class="multiselect__tag custom-tag">
-                                            <img :src="option.avatar" alt=""
-                                                style="width: 20px; border-radius: 20%; margin-right: 5px;" />
-                                            <span>{{ option.email }}</span>
-                                            <i class="multiselect__tag-icon" @click="remove(option)"></i>
-                                        </span>
-                                    </template>
-                                    <template slot="option" slot-scope="props">
-                                        <div class="option__desc">
-                                            <span class="option__title">{{ props.option.email }}</span>
+                                <div class="flex-grow-1">
+                                    <multiselect v-if="editing1" v-model="newAssignees" :options="member"
+                                        :multiple="true" :close-on-select="false" :clear-on-select="false"
+                                        :preserve-search="true" placeholder="Chọn người được phân công" label="email"
+                                        track-by="id" :preselect-first="false" :taggable="true" @tag="addTag">
+                                        <template slot="tag" slot-scope="{ option, remove }">
+                                            <span class="multiselect__tag custom-tag">
+                                                <img :src="option.avatar" alt="" style="
+                            width: 20px;
+                            border-radius: 20%;
+                            margin-right: 5px;
+                            " />
+                                                <span>{{ option.email }}</span>
+                                                <i class="multiselect__tag-icon" @click="remove(option)"></i>
+                                            </span>
+                                        </template>
+                                        <template slot="option" slot-scope="props">
+                                            <div class="option__desc">
+                                                <span class="option__title">{{
+                                                    props.option.email
+                                                    }}</span>
+                                            </div>
+                                        </template>
+                                        <template slot="afterList">
+                                            <div class="search-more-text">Tìm kiếm thêm...</div>
+                                        </template>
+                                        <template slot="noResult">Không tìm thấy kết quả.</template>
+                                        <template slot="noOptions">Danh sách rỗng.</template>
+                                    </multiselect>
+                                    <div v-else-if="newAssignees.length > 0"
+                                        class="d-flex align-items-center flex-wrap gap-2">
+                                        <div v-for="member in newAssignees" :key="member.id"
+                                            class="d-flex align-items-center">
+                                            <img :src="member.avatar" alt="Avatar"
+                                                style="width: 20px; border-radius: 50%; margin-right: 5px" />
+                                            <span class="fw-semibold small">{{ member.email }}</span>
                                         </div>
-                                    </template>
-                                    <template slot="afterList">
-                                        <div class="search-more-text">Tìm kiếm thêm...</div>
-                                    </template>
-                                    <template slot="noResult">Không tìm thấy kết quả.</template>
-                                    <template slot="noOptions">Danh sách rỗng.</template>
-                                </multiselect>
-                                <div v-else-if="selectedMembers.length > 0"
-                                    class="d-flex align-items-center flex-wrap gap-2">
-                                    <div v-for="member in selectedMembers" :key="member.id"
-                                        class="d-flex align-items-center">
-                                        <img :src="member.avatar" alt="Avatar"
-                                            style="width: 20px; border-radius: 50%; margin-right: 5px;" />
-                                        <span class="fw-semibold small">{{ member.email }}</span>
                                     </div>
+                                    <div v-else>Chưa được phân công</div>
+                                    <small class="text-danger" v-if="
+                                        errors && errors.user_id && errors.user_id.length > 0
+                                    ">
+                                        {{ errors.user_id[0] }}
+                                    </small>
                                 </div>
-                                <div v-else>
-                                    Chưa được phân công
-                                </div>
-                                <button @click="editing1 = !editing1" class="btn btn-sm btn-link text-primary ms-2 p-0">
+                                <button @click="editing1 = !editing1" class="btn btn-sm btn-link text-primary ms-2 p-0"
+                                    type="button">
                                     <i :class="editing1 == true ? 'bi bi-check-lg' : 'bi bi-pencil'"></i>
                                 </button>
                             </div>
                         </div>
                         <div class="task-info-row">
                             <div class="task-info-label">Hạn chót</div>
-                            <div class="task-info-value d-flex align-items-center">
-                                <input v-if="editing" type="text" id="deadline-input"
-                                    class="form-control border-0 border-bottom" v-model="deadline"
-                                    @change="editTaskById" />
-                                <div v-else class="fw-semibold text-danger">{{ formatDateTime(deadline) }}</div>
-                                <button @click="editing = !editing" class="btn btn-sm btn-link text-primary ms-2 p-0">
-                                    <i :class="editing ? 'bi bi-check-lg' : 'bi bi-pencil'"></i>
-                                </button>
+                            <div class="task-info-value d-flex flex-column align-items-start">
+                                <input type="text" ref="datetimePickerRefs" placeholder="Chọn ngày giờ"
+                                    class="form-control border-0 border-bottom" v-model="deadline" />
+                                <small class="text-danger" v-if="
+                                    errors && errors.deadline && errors.deadline.length > 0
+                                ">
+                                    {{ errors.deadline[0] }}
+                                </small>
                             </div>
                         </div>
                     </div>
                     <div class="fs-6 mb-2">Mô tả chi tiết</div>
-                    <textarea class="form-control mb-1" rows="6" v-model="description"
-                        @change="editTaskById"></textarea>
-                    <div class="d-flex gap-1 mb-4">
-                        <button class="btn create-btn">Gửi tin</button>
-                    </div>
-                    <div class="d-flex flex-column flex-sm-row align-items-sm-center mb-3 ms-sm-4">
-                        <span class="text-secondary fw-semibold small me-2 mb-2 mb-sm-0">Đến:</span>
-                        <div class="d-flex flex-wrap gap-2">
-                            <span class="badge bg-light text-dark border fw-normal">cuongpham16895</span>
-                            <span class="badge bg-light text-dark border fw-normal">khanhmps39093</span>
-                            <span class="badge bg-light text-dark border fw-normal">quanmpcs39083</span>
-                            <span class="badge bg-light text-dark border fw-normal">tuandmps40831</span>
-                            <span class="badge bg-light text-dark border fw-normal">toanhttps39144</span>
-                            <i class="bi bi-chevron-down text-secondary cursor-pointer"></i>
-                        </div>
-                    </div>
-                    <div class="input-group mb-1">
-                        <span class="input-group-text custom-badge bg-primary text-white">N</span>
-                        <input type="text" class="form-control" placeholder="Gửi tin nhắn cho người theo dõi..." />
-                        <button class="btn btn-light border"><i class="bi bi-emoji-smile"></i></button>
-                    </div>
-                    <button class="btn create-btn fw-semibold text-white"
-                        style="background-color: #042d62; margin-left: 45px; margin-top: 5px;">Gửi</button>
-                    <hr class="my-4" />
-                    <div class="activity-log">
-                        <div class="activity-item mb-3">
-                            <div class="d-flex">
-                                <span
-                                    class="bg-secondary text-white me-2 rounded-circle d-flex justify-content-center align-items-center"
-                                    style="width: 32px; height: 32px; font-size: 14px;">
-                                    N
-                                </span>
-                                <div>
-                                    <span class="fw-semibold" style="font-size: 14px;">N4 Lê Thanh Toàn <small
-                                            class="text-muted ms-2" style="font-size: 12px;">17:49 17 thg
-                                            7</small></span>
-                                    <div class="small">
-                                        Giai đoạn đã thay đổi
-                                        <ul class="mb-0">
-                                            <li>
-                                                Việc cần làm <i class="bi bi-arrow-right"></i>
-                                                <span class="text-primary fw-semibold">Thực hiện</span>
-                                                <span class="text-muted fst-italic">(Giai đoạn)</span>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="activity-item mb-3">
-                            <div class="d-flex">
-                                <span
-                                    class="bg-secondary text-white me-2 rounded-circle d-flex justify-content-center align-items-center"
-                                    style="width: 32px; height: 32px; font-size: 14px;">
-                                    N
-                                </span>
-                                <div>
-                                    <span class="fw-semibold" style="font-size: 14px;">N4 Lê Thanh Toàn <small
-                                            class="text-muted ms-2" style="font-size: 12px;">17:49 17 thg
-                                            7</small></span>
-                                    <div class="small">
-                                        Giai đoạn đã thay đổi
-                                        <ul class="mb-0">
-                                            <li>
-                                                Việc cần làm <i class="bi bi-arrow-right"></i>
-                                                <span class="text-primary fw-semibold">Thực hiện</span>
-                                                <span class="text-muted fst-italic">(Giai đoạn)</span>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="activity-item mb-3">
-                            <div class="d-flex">
-                                <span
-                                    class="bg-secondary text-white me-2 rounded-circle d-flex justify-content-center align-items-center"
-                                    style="width: 32px; height: 32px; font-size: 14px;">
-                                    N
-                                </span>
-                                <div>
-                                    <span class="fw-semibold" style="font-size: 14px;">N4 Lê Thanh Toàn <small
-                                            class="text-muted ms-2" style="font-size: 12px;">17:49 17 thg
-                                            7</small></span>
-                                    <div class="small">
-                                        Giai đoạn đã thay đổi
-                                        <ul class="mb-0">
-                                            <li>
-                                                Việc cần làm <i class="bi bi-arrow-right"></i>
-                                                <span class="text-primary fw-semibold">Thực hiện</span>
-                                                <span class="text-muted fst-italic">(Giai đoạn)</span>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                    <QuillEditor ref="quillRef" v-model:content="description" :toolbar="toolbarOptions"
+                        content-type="html" theme="snow" style="height: 200px" />
+                    <button class="btn create-btn" type="submit">Thêm</button>
+                </form>
             </div>
         </main>
     </div>
 </template>
 
 <script>
-import { nextTick, onMounted, ref, watch } from 'vue';
-import axios from 'axios';
-import { Project } from '@/components/store/crudProject';
+import { nextTick, onMounted, onUnmounted, ref, watch } from "vue";
+import axios from "axios";
+import { toast } from 'vue3-toastify';
 import Multiselect from "vue-multiselect";
-import "vue-multiselect/dist/vue-multiselect.css";
 import flatpickr from "flatpickr";
 import "flatpickr/dist/flatpickr.min.css";
 import { Vietnamese } from "flatpickr/dist/l10n/vn.js";
-import { toast } from 'vue3-toastify';
+import { Project } from "@/components/store/crudProject";
+import { QuillEditor } from "@vueup/vue-quill";
+import { useTokenUser } from "@/components/store/useTokenUser";
 
 export default {
     components: {
+        QuillEditor,
         Multiselect,
+
     },
     props: {
-        taskId: {
-            type: [String, Number],
-            required: true,
-        },
         projectId: {
             type: [String, Number],
             required: true,
         },
     },
     setup(props) {
-        const loading = ref(true); // Thêm biến loading
-        const task = ref({});
-        const creator = ref({});
-        const project = ref({});
+        const showStatusDropdown = ref(false);
+
+        const toggleStatusDropdown = () => {
+            showStatusDropdown.value = !showStatusDropdown.value;
+        };
+        const isLoading = ref(true)
+        const project_name = ref("")
         const member = ref([]);
-        const selectedMembers = ref([]);
-        const editing = ref(false);
+        const newAssignees = ref([]);
         const editing1 = ref(false);
+        const editing = ref(false);
         const deadline = ref("");
+        const status = ref("Việc cần làm");
+        const datetimePickerRefs = ref(null);
         const fpInstance = ref(null);
-        const currentStatus = ref('');
-        const title = ref('');
-        const description = ref('');
+        const title = ref("");
+        const description = ref("");
+        const errors = ref({});
+        const quillRef = ref(null);
+        const toolbarOptions = [
+            // Nhóm 1: Các định dạng văn bản cơ bản
+            ["bold", "italic", "underline", "strike"], // in đậm, in nghiêng, gạch chân, gạch ngang
+
+            // Nhóm 2: Các loại tiêu đề và blockquote
+            [{ header: 1 }, { header: 2 }], // Tiêu đề H1, H2
+            [{ list: "ordered" }, { list: "bullet" }], // Danh sách có số, danh sách có chấm
+            [{ script: "sub" }, { script: "super" }], // Chỉ số dưới, chỉ số trên
+            [{ indent: "-1" }, { indent: "+1" }], // Giảm thụt lề, tăng thụt lề
+            [{ direction: "rtl" }], // Hướng văn bản từ phải sang trái
+
+            // Nhóm 3: Kiểu chữ, căn chỉnh và màu sắc
+            [{ size: ["small", false, "large", "huge"] }], // Cỡ chữ
+            [{ header: [1, 2, 3, 4, 5, 6, false] }], // Tiêu đề H1-H6
+            [{ font: [] }], // Kiểu font chữ
+            [{ align: [] }], // Căn chỉnh văn bản
+            ["clean"], // Xóa định dạng
+
+            // Nhóm 4: Các đối tượng nhúng và link
+            ["link", "image"], // Chèn link, ảnh, video
+            ["code-block"], // Trích dẫn, khối code
+        ];
+
         const {
-            projects,
-            getAllProject
-        } = Project.setup();
-        const prevTaskId = ref(props.taskId - 1);
-        const nextTaskId = ref(parseInt(props.taskId) + 1);
 
-
-
-        const insertTask = async (project_id, status) => {
+            token
+        } = useTokenUser()
+        const getTaskByIdProject = async (id) => {
             try {
-                const res = await axios.post("http://127.0.0.1:8000/api/task", {
-                    project_id: project_id,
-                    created_by: user_id.value,
-                    status: status,
-                    deadline: deadline.value,
-                    title: title.value,
-                    user_id: newAssignees.value.map(user => user.id),
+                // isLoading.value = true;
+                const res = await axios.get(`http://127.0.0.1:8000/api/project/${id}`, {
+                    headers: {
+                        Authorization: `Bearer ${token.value}`,
+                    },
                 });
-                toast.success("Thêm nhiệm vụ thành công");
-                title.value = '';
-                deadline.value = '';
-                newAssignees.value = [];
-                errors.value = {}
-                await getTaskByIdProject(project_id);
-                showDropdown.value[status] = false;
+                member.value = res.data.member;
+                project_name.value = res.data.project_name;
+                // console.log(tasks.value);
             } catch (error) {
-                errors.value = {}
+                console.error("Lỗi khi lấy dữ liệu nhiệm vụ:", error);
+            } finally {
+                isLoading.value = false;
+            }
+        };
+
+        const addTag = (newTag) => {
+            const tag = {
+                name: newTag,
+                id: member.value.length + 1,
+                email: newTag,
+            };
+            member.value.push(tag);
+            newAssignees.value.push(tag);
+        };
+
+        const insertTask = async (project_id) => {
+            try {
+                const res = await axios.post(
+                    "http://127.0.0.1:8000/api/task",
+                    {
+                        project_id: project_id,
+                        status: status.value,
+                        deadline: deadline.value,
+                        title: title.value,
+                        description: description.value,
+                        user_id: newAssignees.value.map((user) => user.id),
+                    },
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token.value}`,
+                        },
+                    }
+                );
+                toast.success("Thêm nhiệm vụ thành công");
+                title.value = "";
+                deadline.value = "";
+                newAssignees.value = [];
+                errors.value = {};
+                await getTaskByIdProject(project_id);
+            } catch (error) {
+                errors.value = {};
                 if (error.response && error.response.status === 422) {
                     errors.value = error.response.data.errors;
                 }
@@ -394,96 +385,105 @@ export default {
             }
         };
 
-
-        const handleStatusChange = async (newStatus) => {
-            currentStatus.value = newStatus;
-            await insertTask();
-        };
-
         const initFlatpickr = () => {
-            const inputElement = document.getElementById('deadline-input');
+            const inputElement = datetimePickerRefs.value;
+            // console.log("inputElement:", inputElement);
             if (inputElement) {
                 if (fpInstance.value) {
                     fpInstance.value.destroy();
                 }
                 fpInstance.value = flatpickr(inputElement, {
                     enableTime: true,
-                    dateFormat: "Y-m-d H:i:s",
+                    noCalendar: false,
+                    dateFormat: "Y-m-d H:i",
                     altInput: true,
                     altFormat: "d/m/Y H:i",
+                    minDate: "today",
                     locale: Vietnamese,
                     disableMobile: true,
-                    defaultDate: deadline.value,
-                    onChange: (selectedDates, dateStr) => {
-                        deadline.value = dateStr;
-                    }
                 });
             }
-        };
-
-        const formatDateTime = (dateStr) => {
-            if (!dateStr) return "";
-            const d = new Date(dateStr);
-            const year = d.getFullYear();
-            const month = String(d.getMonth() + 1).padStart(2, "0");
-            const day = String(d.getDate()).padStart(2, "0");
-            const hours = String(d.getHours()).padStart(2, "0");
-            const minutes = String(d.getMinutes()).padStart(2, "0");
-            return `${day}/${month}/${year} - ${hours}:${minutes}`;
         };
 
         onMounted(async () => {
-            await getTaskById();
-            await getAllProject();
-            nextTick(() => {
+            await getTaskByIdProject(props.projectId)
+            await nextTick(() => {
                 initFlatpickr();
             });
-        });
 
-        watch(editing, (newValue) => {
-            if (newValue) {
-                nextTick(() => {
-                    initFlatpickr();
-                });
-            } else {
-                if (fpInstance.value) {
-                    fpInstance.value.destroy();
-                    fpInstance.value = null;
-                }
-            }
         });
-
-        watch(selectedMembers, async (newMembers, oldMembers) => {
-            if (JSON.stringify(newMembers) !== JSON.stringify(oldMembers)) {
-                await editTaskById();
-            }
-        }, { deep: true });
 
         return {
-            loading, // Thêm loading vào return
-            task,
-            creator,
-            project,
-            projects,
+            isLoading,
+            project_name,
             member,
-            selectedMembers,
-            editing,
-            formatDateTime,
             deadline,
             fpInstance,
             editing1,
-            editTaskById,
-            currentStatus,
+            editing,
             description,
             title,
-            handleStatusChange,
-            nextTaskId,
-            prevTaskId,
+            token,
+            toolbarOptions,
+            toggleStatusDropdown,
+            showStatusDropdown,
+            status,
+            quillRef,
+            datetimePickerRefs,
+            newAssignees,
+            addTag,
+            insertTask,
+            errors
         };
-    }
+    },
 };
 </script>
 <style scoped>
+.input-group1 {
+    position: relative;
+    display: flex;
+    gap: 5px;
+}
+
+.emoji-picker-container {
+    position: absolute;
+    bottom: 100%;
+    right: 0;
+    margin-bottom: 5px;
+    z-index: 1000;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    background-color: white;
+}
+
+.quill-editor-custom .ql-editor {
+    min-height: 100px;
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+.divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: #6d6c6c;
+    margin-bottom: 5px;
+}
+
+.divider::before,
+.divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: #a0a0a0;
+}
+
+.divider span {
+    padding: 0 15px;
+    font-weight: bold;
+}
+
 .skeleton-box {
     background-color: #e2e2e2;
     border-radius: 4px;
@@ -694,6 +694,12 @@ export default {
     cursor: pointer;
     font-size: 16px;
     line-height: 1;
+}
+
+.create-btn {
+    background-color: #032f5c;
+    color: white;
+    margin-top: 5px;
 }
 
 .custom-tag .multiselect__tag-icon:after {
@@ -919,7 +925,6 @@ input:focus~.input-border {
     background-color: #6c757d;
 }
 
-
 .task-content {
     background-color: white;
     border-radius: 8px;
@@ -955,7 +960,6 @@ input:focus~.input-border {
     padding-bottom: 0.5rem;
 }
 
-
 /* Utility Classes */
 .text-muted {
     color: #6c757d !important;
@@ -988,12 +992,131 @@ input:focus~.input-border {
     background-color: #6c757d;
 }
 
+.status-mobile-container .dropdown {
+    position: relative;
+}
+
+.status-mobile-container .dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 1000;
+    display: none;
+    float: left;
+    min-width: 10rem;
+    padding: 0.5rem 0;
+    margin: 0.125rem 0 0;
+    font-size: 1rem;
+    color: #212529;
+    text-align: left;
+    list-style: none;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-radius: 0.25rem;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.175);
+}
+
+.status-mobile-container .dropdown-menu.show {
+    display: block;
+}
+
+.status-mobile-container .dropdown-item {
+    display: block;
+    width: 100%;
+    padding: 0.25rem 1.5rem;
+    clear: both;
+    font-weight: 400;
+    color: #212529;
+    text-align: inherit;
+    text-decoration: none;
+    white-space: nowrap;
+    background-color: transparent;
+    border: 0;
+    cursor: pointer;
+}
+
+.status-mobile-container .dropdown-item:hover,
+.status-mobile-container .dropdown-item.active {
+    background-color: #f8f9fa;
+    color: #032f5c;
+    font-weight: 600;
+}
+
+.task-detail-page {
+    background-color: #f8f9fa;
+    min-height: 100vh;
+}
+
+@media (max-width: 1024px) {
+    .task-detail-header .task-main-title {
+        width: 120px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+}
+
+@media (max-width: 768px) {
+    .emoji-picker-container {
+        top: 100%;
+        bottom: 0%;
+    }
+
+
+    .task-detail-header {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+
+    }
+
+    .task-detail-header .task-main-title {
+        font-size: 1.25rem;
+        width: 120px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+
+    .status-mobile-container {
+        width: 100%;
+        margin-top: 1rem;
+    }
+
+    .task-content {
+        padding: 1rem !important;
+        margin: 1rem !important;
+    }
+
+    .task-info-grid {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+    }
+
+    .input-group1 {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .input-group .form-control {
+        width: 100%;
+    }
+
+    .input-group button {
+        width: 100%;
+    }
+
+    .btn.create-btn {
+        width: 100%;
+        margin-left: 0 !important;
+    }
+}
+
 @media (max-width: 768px) {
     .task-detail-header {
         flex-direction: column;
         align-items: flex-start !important;
-        gap: 1rem;
-        padding: 1rem;
+
     }
 
     .status-mobile {
@@ -1013,14 +1136,13 @@ input:focus~.input-border {
 
     .create-btn-new {
         width: auto;
-        margin-right: 0 !important;
+        margin-top: 5px;
         margin-bottom: 0.5rem !important;
     }
 
     .task-detail-header .d-flex.flex-column.align-items-start {
         width: 100%;
     }
-
 
     .task-detail-header .d-flex.flex-md-row.align-items-md-center.gap-2 {
         flex-direction: column;
@@ -1032,10 +1154,6 @@ input:focus~.input-border {
         display: none !important;
     }
 
-    .task-detail-header .d-md-none {
-        display: block !important;
-        width: 100%;
-    }
 
     .status-tag {
         font-size: 0.75rem;
@@ -1057,11 +1175,6 @@ input:focus~.input-border {
     .d-flex.align-items-center.mb-3 {
         flex-direction: column;
         align-items: flex-start !important;
-    }
-
-    .input-group {
-        flex-direction: column;
-        gap: 0.5rem;
     }
 
     .input-group input,

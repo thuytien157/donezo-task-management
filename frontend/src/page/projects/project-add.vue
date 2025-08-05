@@ -142,7 +142,7 @@
                     </div>
                     <div class="fs-6 mb-2">Mô tả chi tiết</div>
                     <QuillEditor ref="quillRef" v-model:content="description" :toolbar="toolbarOptions"
-                        content-type="html" theme="snow" style="height: 300px" />
+                        content-type="html" theme="snow" style="height: 200px" />
 
                     <button class="btn create-btn" type="submit">Thêm</button>
                 </form>
@@ -204,39 +204,6 @@ export default {
             ["link", "image"], // Chèn link, ảnh, video
             ["code-block"], // Trích dẫn, khối code
         ];
-        // const handlePaste = (event) => {
-        //     const items = event.clipboardData.items;
-
-        //     for (const item of items) {
-        //         if (item.type.startsWith("image/")) {
-        //             event.preventDefault();
-
-        //             const file = item.getAsFile();
-        //             pastedFiles.value.push(file);
-        //             const imageUrl = URL.createObjectURL(file);
-        //             const imageId = `pasted-image-${Date.now()}`;
-        //             const imageHtml = `<img src="${imageUrl}" id="${imageId}" style="max-width: 100%; vertical-align: middle;">`;
-        //             document.execCommand("insertHTML", false, imageHtml);
-        //             updateContent();
-        //             break;
-        //         }
-        //     }
-        // };
-        // const uploadImage = async (file) => {
-        //     const formData = new FormData();
-        //     formData.append("image", file);
-        //     const res = await axios.post(
-        //         "http://127.0.0.1:8000/api/task/upload-image",
-        //         formData,
-        //         {
-        //             headers: {
-        //                 Authorization: `Bearer ${token.value}`,
-        //                 "Content-Type": "multipart/form-data",
-        //             },
-        //         }
-        //     );
-        //     return res.data.url;
-        // };
 
         return {
             quillRef,

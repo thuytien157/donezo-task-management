@@ -4,7 +4,7 @@ const routes = [
   {
     path: "/home",
     name: "client-home",
-    component: () => import("../page/home/home.vue"),
+    component: () => import("../page/projects/project-list.vue"),
     meta: { requiresAuth: true },
   },
   {
@@ -26,6 +26,12 @@ const routes = [
   {
     path: "/projects/:projectId/tasks/:taskId",
     component: () => import("../page/tasks/task-detail.vue"),
+    meta: { requiresAuth: true },
+    props: true,
+  },
+  {
+    path: "/projects/:projectId/tasks/new",
+    component: () => import("../page/tasks/task-add.vue"),
     meta: { requiresAuth: true },
     props: true,
   },
@@ -70,6 +76,9 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(),
   routes,
+  scrollBehavior(to, from, savedPosition) {
+    return { top: 0, left: 0 };
+  },
 });
 
 router.beforeEach((to, from, next) => {

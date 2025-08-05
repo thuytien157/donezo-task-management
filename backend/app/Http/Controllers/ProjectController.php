@@ -8,6 +8,7 @@ use App\Models\Project;
 use App\Models\Project_member;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class ProjectController extends Controller
@@ -15,9 +16,17 @@ class ProjectController extends Controller
     /**
      * Display a listing of the resource.
      */
+
     public function index()
     {
-        $projects = Project::withCount('tasks')->get();
+        $currentUserId = Auth::id();
+
+        $projects = Project::withCount('tasks')
+            ->where('owner_id', $currentUserId)
+            ->orWhereHas('users', function ($query) use ($currentUserId) {
+                $query->where('user_id', $currentUserId);
+            })
+            ->get();
 
         return response()->json([
             'projects' => $projects
@@ -124,15 +133,17 @@ class ProjectController extends Controller
         return response()->json([
             'tasks_by_status' => $taskByStatus,
             'member' => $membersWithRole,
-            'project_name' => $project->title
+            'project_name' => $project->title,
+            'isGroup' => $project->is_group_project
         ], 200);
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id) {
-        $project = Project::find($id);
+    public function edit(string $id)
+    {
+        $project = Project::with('creator')->find($id);
 
         return response()->json([
             'project' => $project
