@@ -41,6 +41,12 @@ const routes = [
     meta: { requiresAuth: true },
     props: true,
   },
+  {
+    path: "/projects/:projectId/overview",
+    component: () => import("../page/projects/project-report.vue"),
+    meta: { requiresAuth: true },
+    props: true,
+  },
 
   {
     path: "/register",
@@ -84,8 +90,8 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   document.title = to.meta.title || "DONEZO TASKMANAGEMENT";
 
-  const token = localStorage.getItem("token");
-  const userString = localStorage.getItem("user");
+  const token = localStorage.getItem("token_donezo");
+  const userString = localStorage.getItem("user_donezo");
   const user = userString ? JSON.parse(userString) : null;
 
   const isAuthenticated = token && user;

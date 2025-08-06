@@ -36,7 +36,7 @@ class Task_history extends Model
 
         $userIds = json_decode($this->old_value);
         if (is_array($userIds) && count($userIds) > 0) {
-            return User::whereIn('id', $userIds)->value('fullname');
+            return User::whereIn('id', $userIds)->value('username');
         }
 
         return "Không";
@@ -49,7 +49,7 @@ class Task_history extends Model
         }
         $userIds = json_decode($this->new_value);
         if (is_array($userIds) && count($userIds) > 0) {
-            return User::whereIn('id', $userIds)->value('fullname');
+            return User::whereIn('id', $userIds)->value('username');
         }
 
         return "Không";

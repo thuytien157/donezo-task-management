@@ -1,41 +1,29 @@
 <template>
-    <header>
+    <header id="main-header">
         <nav class="navbar navbar-expand-lg p-3 shadow-sm position-fixed top-0 w-100"
             style="background-color: white; z-index: 999">
             <div class="container-fluid">
-                <!-- Logo -->
-                <router-link :to="'/'">
-                    <img src="/img/logo.png" alt="Logo" class="logo" />
+                <router-link :to="'/'" v-if="isDarkMode">
+                    <img src="/img/logo1.png" alt="Logo" class="logo" style="background-color: aliceblue;" />
+                </router-link>
+                <router-link :to="'/'" v-else>
+                    <img src="/img/logo.png" alt="Logo" class="logo" style="background-color: aliceblue;" />
                 </router-link>
 
-                <!-- Toggler -->
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarResponsive">
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
-                <!-- Content -->
                 <div class="collapse navbar-collapse justify-content-between align-items-center" id="navbarResponsive">
-                    <!-- Left side -->
                     <div
                         class="d-flex flex-column flex-lg-row gap-2 align-items-start align-items-lg-center justify-content-end mt-2 mt-lg-0 w-100 me-3">
-                        <!-- <button type="button" class="btn create-btn" data-bs-toggle="modal"
-                            data-bs-target="#exampleModal1" @click="projectModalInstance = true">
-                            + Thêm dự án
-                        </button> -->
-                        <router-link :to="'projects/new'" type="button" class="btn create-btn">
+                        <router-link :to="'/projects/new'" type="button" class="btn create-btn">
                             + Thêm dự án
                         </router-link>
-
                     </div>
 
                     <div class="d-flex align-items-center gap-3 mt-3 mt-lg-0">
-                        <label class="toggle-switch">
-                            <input type="checkbox" />
-                            <span class="switch-bg">
-                                <span class="switch-handle"></span>
-                            </span>
-                        </label>
                         <div class="dropdown-container">
                             <a class="nav-link" @click="toggleDropdown()">
                                 <img v-if="avatar && avatar !== ''" :src="avatar" alt="Avatar" class="avatar-img" />
@@ -43,10 +31,15 @@
                             </a>
                             <ul class="dropdown-menu" v-if="showDropdown">
                                 <li>
-                                    <a class="dropdown-item" href="/profile">Hồ sơ tài khoản</a>
-                                </li>
-                                <li>
-                                    <hr class="dropdown-divider" />
+                                    <div class="dropdown-item d-flex justify-content-between" style="cursor: pointer">
+                                        Chế độ tối
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" @change="toggleDarkMode" :checked="isDarkMode" />
+                                            <span class="switch-bg">
+                                                <span class="switch-handle"></span>
+                                            </span>
+                                        </label>
+                                    </div>
                                 </li>
                                 <li>
                                     <a class="dropdown-item" @click="logout" style="cursor: pointer">Đăng xuất</a>
@@ -58,104 +51,6 @@
             </div>
         </nav>
     </header>
-    <!-- <div v-if="projectModalInstance" class="custom-backdrop"></div> -->
-    <!-- <div class="modal fade" id="exampleModal1" data-bs-backdrop="false" data-bs-keyboard="false" tabindex="-1"
-        aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
-            <form class="modal-content" @submit.prevent="insertProject">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="staticBackdropLabel" style="color: #042d62">
-                        Thêm dự án mới
-                    </h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
-                        @click="projectModalInstance = false"></button>
-                </div>
-
-                <div class="modal-body">
-                    <div class="d-flex">
-                        <div class="col-6 border-end pe-3">
-                            <div class="mb-3">
-                                <label class="form-label">Dự án <span class="text-danger">*</span></label>
-                                <br />
-                                <small class="text-danger" v-if="
-                                    errors &&
-                                    errors.is_group_project &&
-                                    errors.is_group_project.length > 0
-                                ">
-                                    {{ errors.is_group_project[0] }}
-                                </small>
-
-                                <select class="form-select" v-model="is_group_project">
-                                    <option :value="false">Cá nhân</option>
-                                    <option :value="true">Nhóm</option>
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label for="" class="form-label">Tiêu đề <span class="text-danger">*</span></label>
-                                <br />
-                                <small class="text-danger" v-if="errors && errors.title && errors.title.length > 0">
-                                    {{ errors.title[0] }}
-                                </small>
-
-                                <input type="text" class="form-control" id="" v-model="title" />
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-check-label" for="">Mô tả</label>
-                                <br />
-                                <small class="text-danger" v-if="
-                                    errors &&
-                                    errors.description &&
-                                    errors.description.length > 0
-                                ">
-                                    {{ errors.description[0] }}
-                                </small>
-                                <textarea name="" id="" cols="3" class="form-control" v-model="description"></textarea>
-                            </div>
-                        </div>
-                        <div class="col-6 ps-3">
-                            <div class="mb-3">
-                                <label class="form-label">Thời gian bắt đầu</label><br />
-                                <small class="text-danger" v-if="
-                                    errors && errors.start_date && errors.start_date.length > 0
-                                ">
-                                    {{ errors.start_date[0] }}
-                                </small>
-                                <input type="date" class="form-control" v-model="start_date" :min="today" />
-                            </div>
-                            <div class="mb-3">
-                                <label for="" class="form-label">Thời gian kết thúc</label><br />
-                                <small class="text-danger"
-                                    v-if="errors && errors.end_date && errors.end_date.length > 0">
-                                    {{ errors.end_date[0] }}
-                                </small>
-                                <input type="date" class="form-control" v-model="end_date" :min="today" />
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label" for="">Trạng thái <span
-                                        class="text-danger">*</span></label><br />
-                                <small class="text-danger" v-if="errors && errors.status && errors.status.length > 0">
-                                    {{ errors.status[0] }}
-                                </small>
-                                <select name="" id="" class="form-select" v-model="status">
-                                    <option value="Đang thực hiện">Đang thực hiện</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                        Hủy
-                    </button>
-                    <button type="submit" class="create-btn" :class="{ loading: isLoading }">
-                        <span v-if="!isLoading">Tạo mới</span>
-                        <span v-else class="spinner"></span>
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div> -->
 </template>
 
 <script>
@@ -165,12 +60,22 @@ import { useRouter } from "vue-router";
 import { toast } from "vue3-toastify";
 import { Project } from "./store/crudProject";
 import { useTokenUser } from "./store/useTokenUser";
+import { useDarkMode } from "./store/darkmode";
+
 export default {
-    setup() { 
+    setup() {
         const showDropdown = ref(false);
+        // const isDarkMode = ref(false);
+
         function toggleDropdown() {
             showDropdown.value = !showDropdown.value;
         }
+
+        const {
+            isDarkMode,
+            toggleDarkMode
+        } = useDarkMode.setup()
+
         const {
             isLoading,
             status,
@@ -189,7 +94,7 @@ export default {
             avatar,
             token
         } = useTokenUser()
-        
+
         const logout = async () => {
             try {
                 await axios.get("http://127.0.0.1:8000/api/logout", {
@@ -197,8 +102,8 @@ export default {
                         Authorization: `Bearer ${token.value}`,
                     },
                 });
-                localStorage.removeItem("token");
-                localStorage.removeItem("user");
+                localStorage.removeItem("token_donezo");
+                localStorage.removeItem("user_donezo");
                 window.location.reload();
                 toast.success("Đăng xuất thành công!");
             } catch (error) {
@@ -224,11 +129,54 @@ export default {
             projectModalInstance,
             toggleDropdown,
             showDropdown,
+            isDarkMode,
+            toggleDarkMode,
         };
     },
 };
 </script>
+
+
 <style scoped>
+.dark-mode {
+    background-color: #3C3E4B;
+    color: #f0f0f0;
+}
+
+.dark-mode .navbar {
+    background-color: #3C3E4B !important;
+    box-shadow: 0 2px 4px rgba(255, 255, 255, 0.1);
+}
+
+.dark-mode .dropdown-menu {
+    background-color: #3a3a3a;
+    border: 1px solid #3a3a3a;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+}
+
+.dark-mode .dropdown-item {
+    color: #f0f0f0;
+}
+
+.dark-mode .dropdown-item:hover {
+    background-color: #333333;
+    color: #fff;
+}
+
+.dark-mode .avatar-icon {
+    color: #f0f0f0;
+}
+
+.dark-mode .create-btn {
+    background-color: #0f3b75;
+    color: #fff;
+}
+
+
+.dark-mode .toggle-switch input:checked+.switch-bg {
+    background-color: #2ec436;
+}
+
 .dropdown-container {
     position: relative;
     display: inline-block;
@@ -256,7 +204,6 @@ export default {
     right: 0;
     z-index: 1000;
     min-width: 160px;
-    padding: 10px 0;
     margin-top: 5px;
     background-color: #fff;
     border: 1px solid rgba(0, 0, 0, 0.15);
@@ -266,30 +213,19 @@ export default {
     display: block;
 }
 
-/* Các mục trong dropdown */
 .dropdown-item {
     display: block;
-    padding: 8px 16px;
     clear: both;
     font-weight: 400;
     color: #333;
     text-decoration: none;
     white-space: nowrap;
+    font-size: 14px;
 }
 
-/* Hiệu ứng khi di chuột qua các mục */
 .dropdown-item:hover {
-    color: #fff;
-    background-color: #007bff;
-    /* Màu nền khi hover */
-}
-
-/* Đường kẻ phân cách */
-.dropdown-divider {
-    height: 1px;
-    margin: 9px 0;
-    overflow: hidden;
-    background-color: #e9ecef;
+    color: #000000;
+    background-color: #e7e9ec;
 }
 
 .logo {
@@ -305,18 +241,6 @@ export default {
     .create-btn {
         width: 100%;
     }
-}
-
-.btn-icon {
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    background: none;
-    color: #333;
-    padding: 0px 10px;
-    transition: color 0.3s ease, transform 0.3s ease;
-    cursor: pointer;
-    background: #ffffff;
-    box-shadow: 5px 5px 10px #ecebeb;
 }
 
 .layout-icon {
@@ -385,96 +309,14 @@ input:checked+.switch-bg .switch-handle {
     transform: translateX(19px);
 }
 
-/* Tìm kiếm */
-.search-box {
-    display: flex;
-    align-items: center;
-    background-color: #f9f9f9;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    padding: 3px 5px;
-    height: 40px;
-    min-width: 100px;
-    /* max-width: 300px; */
-    transition: box-shadow 0.3s;
-}
-
-.search-box:hover {
-    box-shadow: 0 0 0 2px #042d62;
-}
-
-.search-input {
-    border: none;
-    outline: none;
-    background: transparent;
-    padding-left: 8px;
-    font-size: 14px;
-    color: #333;
-    flex-grow: 1;
-}
-
-.search-input::placeholder {
-    color: #999;
-    font-size: 13px;
-}
-
-.search-btn {
-    border: none;
-    background: none;
-    color: #555;
-    font-size: 16px;
-    cursor: pointer;
-    padding: 0 5px;
-}
-
-.search-btn:hover {
-    color: #12b76a;
-}
-
 .create-btn {
-    background-color: #042d62;
+    background-color: #0f3b75;
     color: #fff;
-    border: none;
-    padding: 6px 16px;
-    border-radius: 5px;
-    position: relative;
-    min-width: 90px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-}
-
-.create-btn .spinner {
-    border: 2px solid #fff;
-    border-top: 2px solid transparent;
-    border-radius: 50%;
-    width: 14px;
-    height: 14px;
-    animation: spin 0.6s linear infinite;
-    display: none;
-}
-
-.create-btn.loading .spinner {
-    display: inline-block;
 }
 
 .create-btn:hover {
-    background-color: #042d62;
+    background-color: #405a7c;
     color: #fff;
-}
-
-.custom-backdrop {
-    position: fixed;
-    /* Đảm bảo nó che phủ toàn bộ màn hình */
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    /* Nền đen mờ */
-    z-index: 1040;
-    /* Đặt z-index thấp hơn modal (thường là 1050) nhưng cao hơn nội dung khác */
 }
 
 @keyframes spin {

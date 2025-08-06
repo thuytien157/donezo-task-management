@@ -1,8 +1,8 @@
 import { onMounted, ref } from "vue";
 
 export function useTokenUser() {
-  const userString = localStorage.getItem("user");
-  const tokenString = localStorage.getItem("token");
+  const userString = localStorage.getItem("user_donezo");
+  const tokenString = localStorage.getItem("token_donezo");
 
   const token = ref(null);
   const userId = ref(null);

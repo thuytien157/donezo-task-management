@@ -71,10 +71,9 @@
         <main v-else class="task-content p-3 m-md-4" style="background-color: white">
             <div class="row">
                 <form class="col-12" @submit.prevent="editProjectById(projectId)">
-                    <div class="d-flex align-items-center mb-3 flex-wrap">
-                        <div class="mb-0 fw-medium border-0 border-bottom w-100"
-                            style="font-size: 1.5rem; color: #333; padding: 5px"
-                            placeholder="Nhập tiêu đề án tại đây...">
+                    <div class="d-flex align-items-center mb-3 flex-wrap title">
+                        <div class="mb-0 fw-medium border-0 border-bottom w-100 "
+                            style="font-size: 1.5rem; padding: 5px" placeholder="Nhập tiêu đề án tại đây...">
                             {{ project.title }}
                         </div>
                     </div>
@@ -222,6 +221,139 @@ export default {
 };
 </script>
 <style scoped>
+.dark-mode .task-detail-page {
+    background-color: #1a1a1a !important;
+    /* Nền của toàn bộ trang */
+}
+
+.dark-mode .task-content {
+    background-color: #3c3e4b !important;
+    /* Nền chính của nội dung */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+    color: #f0f0f0;
+}
+
+.dark-mode .member-info .member-name {
+    color: #f0f0f0 !important;
+}
+
+.dark-mode .member-info .member-name span {
+    color: #ccc !important;
+}
+
+.dark-mode .task-title-input {
+    color: #f0f0f0 !important;
+    border-bottom-color: #444;
+}
+
+.dark-mode .task-info-label {
+    color: #ffffff;
+}
+
+.dark-mode .form-select,
+.dark-mode .form-control {
+    background-color: #3a3a3a;
+    color: #f0f0f0;
+    border: 1px solid #555;
+}
+
+.dark-mode .form-select:disabled,
+.dark-mode .form-control:disabled {
+    background-color: #4a4a4a;
+    color: #ccc;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.dark-mode .ql-container.ql-snow,
+.dark-mode .ql-toolbar.ql-snow {
+    background-color: #3a3a3a;
+    border-color: #555;
+}
+
+.dark-mode .ql-editor {
+    background-color: #3a3a3a;
+    color: #f0f0f0;
+}
+
+.dark-mode .create-btn {
+    background-color: #042d62;
+    color: #fff;
+}
+
+.dark-mode .create-btn:hover {
+    background-color: #0d3b74;
+}
+
+.dark-mode .divider {
+    color: #ccc;
+}
+
+.dark-mode .divider::before,
+.dark-mode .divider::after {
+    background: #555;
+}
+
+.dark-mode .activity-item .fw-semibold {
+    color: #f0f0f0;
+}
+
+.dark-mode .activity-item .small {
+    color: #ccc;
+}
+
+.dark-mode .input-group1 .btn-light {
+    background-color: #3a3a3a;
+    border-color: #555;
+    color: #ccc;
+}
+
+.dark-mode .input-group1 .btn-light:hover {
+    background-color: #4a4a4a;
+}
+
+
+
+/* Chỉnh lại Skeleton Loading cho chế độ tối */
+@keyframes pulse-dark {
+    0% {
+        background-color: #444;
+    }
+
+    50% {
+        background-color: #555;
+    }
+
+    100% {
+        background-color: #444;
+    }
+}
+
+.dark-mode .skeleton-box {
+    background-color: #444;
+    animation: pulse-dark 1.5s infinite;
+}
+
+.dark-mode .skeleton-input-title,
+.dark-mode .skeleton-label,
+.dark-mode .skeleton-value,
+.dark-mode .skeleton-multiselect-value,
+.dark-mode .skeleton-deadline-value,
+.dark-mode .skeleton-icon-btn,
+.dark-mode .skeleton-textarea,
+.dark-mode .skeleton-btn-small,
+.dark-mode .skeleton-to-label,
+.dark-mode .skeleton-badge,
+.dark-mode .skeleton-avatar,
+.dark-mode .skeleton-input,
+.dark-mode .skeleton-btn-send,
+.dark-mode .skeleton-hr,
+.dark-mode .skeleton-activity-header,
+.dark-mode .skeleton-activity-text,
+.dark-mode .skeleton-activity-li {
+    background-color: #444;
+}
+
 .member-info .member-name {
     font-size: 14px;
     font-weight: 600;

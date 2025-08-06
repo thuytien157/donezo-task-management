@@ -166,8 +166,8 @@
                     </small>
                     <div class="d-flex align-items-center mb-1 flex-column align-items-start">
 
-                        <input class="mb-0 fw-medium input" style="font-size: 1.5rem; color: #333; padding: 5px"
-                            v-model="title" placeholder="Nhập tiêu đề nhiệm vụ tại đây.." />
+                        <input class="mb-0 fw-medium input" style="font-size: 1.5rem; padding: 5px" v-model="title"
+                            placeholder="Nhập tiêu đề nhiệm vụ tại đây.." />
 
                     </div>
 
@@ -199,7 +199,7 @@
                                             <div class="option__desc">
                                                 <span class="option__title">{{
                                                     props.option.email
-                                                    }}</span>
+                                                }}</span>
                                             </div>
                                         </template>
                                         <template slot="afterList">
@@ -439,6 +439,152 @@ export default {
 };
 </script>
 <style scoped>
+.dark-mode .task-detail-page {
+    background-color: #1a1a1a !important;
+    /* Nền của toàn bộ trang */
+}
+
+.dark-mode input {
+    background-color: #3c3e4b;
+    color: aliceblue;
+
+}
+
+.dark-mode select {
+    background-color: #3c3e4b;
+    color: aliceblue;
+}
+
+.dark-mode .task-detail-header {
+    background-color: #3c3e4b !important;
+    border-bottom: none;
+}
+
+.dark-mode .custom-breadcrumb-ol .breadcrumb-item a {
+    color: #e7e6e6;
+}
+
+.dark-mode .task-main-title {
+    color: #e7e6e6;
+}
+
+.dark-mode .small {
+    color: #e7e6e6;
+}
+
+.dark-mode .task-info-value {
+    color: #e7e6e6;
+}
+
+.dark-mode .task-content {
+    background-color: #3c3e4b !important;
+    /* Nền chính của nội dung */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+    color: #f0f0f0;
+}
+
+.dark-mode .member-info .member-name {
+    color: #f0f0f0 !important;
+}
+
+.dark-mode .member-info .member-name span {
+    color: #ccc !important;
+}
+
+.dark-mode .task-title-input {
+    color: #f0f0f0 !important;
+    border-bottom-color: #444;
+}
+
+.dark-mode .task-info-label {
+    color: #ffffff;
+}
+
+.dark-mode .form-select:disabled,
+.dark-mode .form-control:disabled {
+    background-color: #4a4a4a;
+    color: #ccc;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.dark-mode .ql-container.ql-snow,
+.dark-mode .ql-toolbar.ql-snow {
+    background-color: #3a3a3a;
+    border-color: #555;
+}
+
+.dark-mode .ql-editor {
+    background-color: #3a3a3a;
+    color: #f0f0f0;
+}
+
+.dark-mode .create-btn {
+    margin-top: 5px;
+    background-color: #0f3b75;
+}
+
+.dark-mode .create-btn:hover {
+    background-color: #385579;
+}
+
+.dark-mode .divider {
+    color: #ccc;
+}
+
+.dark-mode .divider::before,
+.dark-mode .divider::after {
+    background: #555;
+}
+
+.dark-mode .activity-item .fw-semibold {
+    color: #f0f0f0;
+}
+
+.dark-mode .activity-item .small {
+    color: #ccc;
+}
+
+
+@keyframes pulse-dark {
+    0% {
+        background-color: #444;
+    }
+
+    50% {
+        background-color: #555;
+    }
+
+    100% {
+        background-color: #444;
+    }
+}
+
+.dark-mode .skeleton-box {
+    background-color: #444;
+    animation: pulse-dark 1.5s infinite;
+}
+
+.dark-mode .skeleton-input-title,
+.dark-mode .skeleton-label,
+.dark-mode .skeleton-value,
+.dark-mode .skeleton-multiselect-value,
+.dark-mode .skeleton-deadline-value,
+.dark-mode .skeleton-icon-btn,
+.dark-mode .skeleton-textarea,
+.dark-mode .skeleton-btn-small,
+.dark-mode .skeleton-to-label,
+.dark-mode .skeleton-badge,
+.dark-mode .skeleton-avatar,
+.dark-mode .skeleton-input,
+.dark-mode .skeleton-btn-send,
+.dark-mode .skeleton-hr,
+.dark-mode .skeleton-activity-header,
+.dark-mode .skeleton-activity-text,
+.dark-mode .skeleton-activity-li {
+    background-color: #444;
+}
+
 .input-group1 {
     position: relative;
     display: flex;
@@ -791,7 +937,7 @@ export default {
 }
 
 .input {
-    color: #fff;
+    color: #000000;
     font-size: 0.9rem;
     background-color: transparent;
     width: 100%;

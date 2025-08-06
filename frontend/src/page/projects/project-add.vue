@@ -1,73 +1,5 @@
 <template>
     <div class="task-detail-page container-fluid p-0">
-        <!-- <main v-if="loading" class="task-content p-3 m-md-4" style="background-color: white">
-            <div class="row">
-                <div class="col-12">
-                    <div class="d-flex align-items-center mb-3 flex-wrap">
-                        <div class="skeleton-box skeleton-input-title"></div>
-                    </div>
-                    <div class="task-info-grid mb-4">
-                        <div class="task-info-row">
-                            <div class="task-info-label skeleton-box skeleton-label"></div>
-                            <div class="task-info-value skeleton-box skeleton-value"></div>
-                        </div>
-                        <div class="task-info-row">
-                            <div class="task-info-label skeleton-box skeleton-label"></div>
-                            <div class="task-info-value d-flex align-items-center">
-                                <div class="skeleton-box skeleton-multiselect-value"></div>
-                                <div class="skeleton-box skeleton-icon-btn ms-2"></div>
-                            </div>
-                        </div>
-                        <div class="task-info-row">
-                            <div class="task-info-label skeleton-box skeleton-label"></div>
-                            <div class="task-info-value d-flex align-items-center">
-                                <div class="skeleton-box skeleton-deadline-value"></div>
-                                <div class="skeleton-box skeleton-icon-btn ms-2"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="fs-6 mb-2 skeleton-box skeleton-label"></div>
-                    <div class="skeleton-box skeleton-textarea mb-1"></div>
-                    <div class="d-flex gap-1 mb-4">
-                        <div class="skeleton-box skeleton-btn-small"></div>
-                    </div>
-                    <div class="d-flex flex-column flex-sm-row align-items-sm-center mb-3 ms-sm-4">
-                        <div class="skeleton-box skeleton-to-label me-2 mb-2 mb-sm-0"></div>
-                        <div class="d-flex flex-wrap gap-2">
-                            <div class="skeleton-box skeleton-badge"></div>
-                            <div class="skeleton-box skeleton-badge"></div>
-                            <div class="skeleton-box skeleton-badge"></div>
-                        </div>
-                    </div>
-                    <div class="input-group mb-1">
-                        <div class="skeleton-box skeleton-avatar"></div>
-                        <div class="skeleton-box skeleton-input"></div>
-                        <div class="skeleton-box skeleton-icon-btn"></div>
-                    </div>
-                    <div class="skeleton-box skeleton-btn-send"></div>
-                    <hr class="my-4 skeleton-hr" />
-                    <div class="activity-log">
-                        <div class="activity-item mb-3" v-for="i in 3" :key="i">
-                            <div class="d-flex">
-                                <div class="skeleton-box skeleton-avatar me-2"></div>
-                                <div>
-                                    <div class="skeleton-box skeleton-activity-header"></div>
-                                    <div class="small mt-1">
-                                        <div class="skeleton-box skeleton-activity-text"></div>
-                                        <ul class="mb-0">
-                                            <li>
-                                                <div class="skeleton-box skeleton-activity-li"></div>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </main> -->
-
         <main class="task-content p-3 m-md-4" style="background-color: white">
             <div class="row">
                 <form class="col-12" @submit.prevent="insertProject">
@@ -175,11 +107,9 @@ export default {
             insertProject,
             errors,
             today,
-            projectModalInstance,
         } = Project.setup();
         const editableDivRef = ref(null);
         const quillRef = ref(null);
-        const pastedFiles = ref([]);
 
 
         const toolbarOptions = [
@@ -226,6 +156,151 @@ export default {
 };
 </script>
 <style scoped>
+.dark-mode .task-detail-page {
+    background-color: #1a1a1a !important;
+    /* Nền của toàn bộ trang */
+}
+
+.dark-mode .task-detail-header {
+    background-color: #3c3e4b !important;
+    border-bottom: none;
+}
+
+.dark-mode .custom-breadcrumb-ol .breadcrumb-item a {
+    color: #e7e6e6;
+}
+
+.dark-mode .task-main-title {
+    color: #e7e6e6;
+}
+
+.dark-mode .small {
+    color: #e7e6e6;
+}
+
+.dark-mode .task-info-value {
+    color: #e7e6e6;
+}
+
+.dark-mode .task-content {
+    background-color: #3c3e4b !important;
+    /* Nền chính của nội dung */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+    color: #f0f0f0;
+}
+
+.dark-mode .member-info .member-name {
+    color: #f0f0f0 !important;
+}
+
+.dark-mode .member-info .member-name span {
+    color: #ccc !important;
+}
+
+.dark-mode .task-title-input {
+    color: #f0f0f0 !important;
+    border-bottom-color: #444;
+}
+
+.dark-mode .task-info-label {
+    color: #ffffff;
+}
+
+.dark-mode .form-select:disabled,
+.dark-mode .form-control:disabled {
+    background-color: #4a4a4a;
+    color: #ccc;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.dark-mode .ql-container.ql-snow,
+.dark-mode .ql-toolbar.ql-snow {
+    background-color: #3a3a3a;
+    border-color: #555;
+}
+
+.dark-mode .ql-editor {
+    background-color: #3a3a3a;
+    color: #f0f0f0;
+}
+
+.dark-mode .create-btn {
+    margin-top: 5px;
+    background-color: #0f3b75;
+}
+
+.dark-mode .create-btn:hover {
+    background-color: #385579;
+}
+
+.dark-mode .divider {
+    color: #ccc;
+}
+
+.dark-mode .divider::before,
+.dark-mode .divider::after {
+    background: #555;
+}
+
+.dark-mode .activity-item .fw-semibold {
+    color: #f0f0f0;
+}
+
+.dark-mode .activity-item .small {
+    color: #ccc;
+}
+
+.dark-mode input {
+    background-color: #3c3e4b;
+    color: aliceblue;
+
+}
+
+.dark-mode select {
+    background-color: #3c3e4b;
+    color: aliceblue;
+}
+
+@keyframes pulse-dark {
+    0% {
+        background-color: #444;
+    }
+
+    50% {
+        background-color: #555;
+    }
+
+    100% {
+        background-color: #444;
+    }
+}
+
+.dark-mode .skeleton-box {
+    background-color: #444;
+    animation: pulse-dark 1.5s infinite;
+}
+
+.dark-mode .skeleton-input-title,
+.dark-mode .skeleton-label,
+.dark-mode .skeleton-value,
+.dark-mode .skeleton-multiselect-value,
+.dark-mode .skeleton-deadline-value,
+.dark-mode .skeleton-icon-btn,
+.dark-mode .skeleton-textarea,
+.dark-mode .skeleton-btn-small,
+.dark-mode .skeleton-to-label,
+.dark-mode .skeleton-badge,
+.dark-mode .skeleton-avatar,
+.dark-mode .skeleton-input,
+.dark-mode .skeleton-btn-send,
+.dark-mode .skeleton-hr,
+.dark-mode .skeleton-activity-header,
+.dark-mode .skeleton-activity-text,
+.dark-mode .skeleton-activity-li {
+    background-color: #444;
+}
+
 /* Định nghĩa các biến CSS để dễ dàng tùy chỉnh sau này */
 :root {
     --primary-color: #042d62;

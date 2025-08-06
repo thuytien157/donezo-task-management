@@ -15,6 +15,11 @@ import TheHeader from './components/TheHeader.vue'
 </template>
 
 <style scoped>
+.dark-mode .content {
+  background: #1a1d26;
+  padding-top: 70px;
+}
+
 .content {
   padding-top: 76px;
 }

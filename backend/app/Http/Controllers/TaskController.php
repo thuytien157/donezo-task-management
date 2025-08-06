@@ -13,10 +13,7 @@ use Illuminate\Support\Facades\Validator;
 
 class TaskController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth:sanctum')->except(['edit']);
-    }
+
     /**
      * Display a listing of the resource.
      */
@@ -158,7 +155,9 @@ class TaskController extends Controller
 
         $task = Task::find($request->task_id);
         $task->description = $request->description;
+
         if ($task->save()) {
+            event(new TaskUpdated($task));
             return response()->json(['message' => 'Cập nhật trạng thái thành công'], 200);
         } else {
             return response()->json(['message' => 'Cập nhật thất bại'], 500);

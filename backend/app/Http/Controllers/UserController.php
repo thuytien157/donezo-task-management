@@ -6,6 +6,7 @@ use App\Mail\ResetPass;
 use App\Models\PasswordReset;
 use App\Models\User;
 use DB;
+use Illuminate\Database\Eloquent\Casts\Json;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -19,19 +20,43 @@ use Illuminate\Support\Str;
 
 class UserController extends Controller
 {
+
+    private function generateUniqueUsername(int $length = 8, string $prefix = 'user_')
+    {
+        $username = '';
+        $isUnique = false;
+
+        do {
+            $characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
+            $randomString = '';
+
+            for ($i = 0; $i < $length; $i++) {
+                $randomString .= $characters[rand(0, strlen($characters) - 1)];
+            }
+
+            $generatedUsername = $prefix . $randomString;
+
+            $isUnique = !User::where('username', $generatedUsername)->exists();
+
+            if ($isUnique) {
+                $username = $generatedUsername;
+            }
+        } while (!$isUnique);
+
+        return $username;
+    }
+
+
     function register(Request $request)
     {
         $validator = Validator::make(
             $request->all(),
             [
-                'fullname' => 'required|string',
                 'email' => 'required|unique:users|email',
                 'password' => 'required|confirmed|min:6|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$/',
-                'password_confirmation' => 'required|confirmed|min:6|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$/'
+                'password_confirmation' => 'required|min:6|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$/'
             ],
             [
-                'fullname.required' => 'Vui lòng nhập tên',
-                'fullname.string' => 'Tên chỉ có thể chứa chữ cái',
                 'email.required' => 'Vui lòng nhập email',
                 'email.unique' => 'Email đã được sử dụng',
                 'email.email' => 'Email không đúng định dạng',
@@ -39,7 +64,6 @@ class UserController extends Controller
                 'password.confirmed' => 'Mật khẩu xác nhận không đúng',
                 'password.min' => 'Mật khẩu phải có ít nhất 6 chữ số',
                 'password.regex' => 'Mật khẩu phải có ít nhất 1 chữ hoa, 1 chữ thường, 1 số và 1 ký tự đặc biệt.',
-
             ]
         );
 
@@ -48,19 +72,17 @@ class UserController extends Controller
         };
 
         $user = new User;
-        $user->fullname = $request->fullname;
+        $user->username = $this->generateUniqueUsername();
         $user->password = Hash::make($request->password);
         $user->email = $request->email;
-        $user->avatar = 'https://ui-avatars.com/api/?name=' . urlencode($request->fullname);
+        $user->avatar = json_encode('https://ui-avatars.com/api/?name=' . urlencode($user->username));
         $user->save();
         $token = $user->createToken('auth')->plainTextToken;
         return response()->json(
             [
                 'message' => 'Đăng ký thành công',
-                'user' => [
-                    $user->avatar,
-                    $user->id
-                ],
+                'user' => $user->id,
+                'avatar' => $user->avatar,
                 'token' => $token
             ],
             201
@@ -104,10 +126,8 @@ class UserController extends Controller
         $token = $user->createToken('auth')->plainTextToken;
         return response()->json([
             'message' => 'Đăng nhập thành công!',
-            'user' => [
-                $user->avatar,
-                $user->id
-            ],
+            'user' => $user->id,
+            'avatar' => json_encode($user->avatar),
             'token' => $token
         ]);
     }
@@ -137,9 +157,13 @@ class UserController extends Controller
             $socialUser = Socialite::driver($provider)->stateless()->user();
             $user = User::where('email', $socialUser->getEmail())->first();
 
-            // if ($user) {
-            //     return redirect("http://localhost:5173/login-success?error=" . urlencode('Email đã được đăng ký, vui lòng đăng nhập bằng mật khẩu hoặc phương thức khác.'));
-            // }
+            // Email đã tồn tại và là tài khoản đăng ký bằng mật khẩu
+            if ($user && $user->provider_name === null) {
+                $token = $user->createToken('token')->plainTextToken;
+                return redirect("http://localhost:5173/login-success?token=$token&login_existing_account=true");
+            }
+
+            // Email chưa tồn tại, tạo tài khoản mới
             if (!$user) {
                 $user = User::create([
                     'email' => $socialUser->getEmail(),
@@ -151,11 +175,8 @@ class UserController extends Controller
                 ]);
             }
 
+            // Đăng nhập thành công (tài khoản mới hoặc tài khoản social đã tồn tại)
             $token = $user->createToken('token')->plainTextToken;
-            // return response()->json([
-            //     'token' => $token,
-            //     'user' => $user->avatar
-            // ]);
             return redirect("http://localhost:5173/login-success?token=$token&user=" . urlencode(json_encode($user->avatar)) . '&id=' . $user->id);
         } catch (\Exception $e) {
             return response()->json([
@@ -165,7 +186,7 @@ class UserController extends Controller
         }
     }
 
-    public function sendResetLink(Request $request)
+    function sendResetLink(Request $request)
     {
 
         $validator = Validator::make(
@@ -201,7 +222,7 @@ class UserController extends Controller
         return response()->json(['message' => 'Link đặt lại mật khẩu đã được gửi!']);
     }
 
-    public function resetPassword(Request $request)
+    function resetPassword(Request $request)
     {
         $validator = Validator::make(
             $request->all(),
@@ -239,8 +260,9 @@ class UserController extends Controller
         return response()->json(
             [
                 'message' => 'Đặt lại mật khẩu thành công!',
-                'user' => $user->avatar,
-                'token' => $token,
+                'avatar' => json_encode($user->avatar),
+                'user' => $user->id,
+                'token' => $token
             ]
         );
     }

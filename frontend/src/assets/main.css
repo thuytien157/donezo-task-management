@@ -2,8 +2,8 @@
 
 html, body {
   height: 100%;
-  margin: 0 auto; /* Loại bỏ margin mặc định của body */
-  padding: 0; /* Loại bỏ padding mặc định */
+  margin: 0 auto;
+  padding: 0;
 }
 
 #app {
@@ -12,4 +12,8 @@ html, body {
   background-color: #fafafa;
   margin: 0 auto;
   max-width: 1500px;
+}
+
+.dark-mode #app {
+  background-color: #1a1d26;
 }

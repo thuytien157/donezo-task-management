@@ -1,5 +1,5 @@
 <template>
-  <main class="container-fluid">
+  <main class="container-fluid mt-3">
     <div class="d-flex justify-content-between align-items-center">
       <h4 class="text-start pt-2">Dự án nhóm</h4>
       <nav v-if="groupProjects.length > itemsPerPage" aria-label="Group projects pagination">
@@ -18,7 +18,7 @@
       </nav>
     </div>
     <div class="row" v-if="isLoading">
-      <div class="col-12 col-sm-6 col-md-4 col-lg-3 mt-2" v-for="n in 12" :key="n">
+      <div class="col-12 col-sm-6 col-md-4 col-lg-3 mt-2 card-dardmode" v-for="n in 12" :key="n">
         <div class="card">
           <div class="card__skeleton card__title"></div>
           <div class="card__skeleton card__description"></div>
@@ -27,7 +27,7 @@
         </div>
       </div>
     </div>
-    <div class="row" v-else style="min-height: 300px;">
+    <div class="row" v-else style="min-height: 150px;">
       <div class="col-12 col-sm-6 col-md-4 col-lg-3 mt-2" v-for="project in paginatedGroupProjects" :key="project.id">
         <div class="card rounded text-start">
           <router-link :to="`/projects/${project.id}/tasks`" class="text-decoration-none">
@@ -42,7 +42,7 @@
           </router-link>
 
           <div class="d-flex justify-content-between mt-2">
-            <div class="lh-lg" style="font-size: 14px; color: #032f5c">
+            <div class="lh-lg tacvu" style="font-size: 14px;">
               {{ project.tasks_count }} tác vụ
             </div>
             <div class="custom-dropdown">
@@ -55,18 +55,29 @@
                   <router-link class="dropdown-item" :to="`/projects/${project.id}`">Thông tin</router-link>
                 </li>
                 <li>
-                  <div class="dropdown-item" >Biểu đồ</div>
+                  <router-link :to="`/projects/${project.id}/overview`" class="dropdown-item">Tổng hợp</router-link>
                 </li>
               </ul>
             </div>
           </div>
         </div>
       </div>
-      <div v-if="groupProjects.length == 0" class="text-center">Không có dự án nào</div>
+      <div v-if="groupProjects.length == 0" class="empty-state-container">
+        <div class="empty-state-content">
+          <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" fill="currentColor" class="bi bi-folder2-open"
+            viewBox="0 0 16 16">
+            <path
+              d="M1 3.5A1.5 1.5 0 0 1 2.5 2h2.764c.958 0 1.76.606 2.072 1.40a2 2 0 0 0 .584.804A1.5 1.5 0 0 1 9.736 5h5.514A1.5 1.5 0 0 1 16 6.5v1.293L14.736 5H9.736a.5.5 0 0 0-.462.291c-.42.876-1.125 1.631-2.28 2.083A3.5 3.5 0 0 0 1 9.5a3.5 3.5 0 0 0 2.28 3.291c1.155.452 1.86.607 2.28.083A.5.5 0 0 0 7.736 12h5.514L16 13.293V14.5A1.5 1.5 0 0 1 14.5 16H2.5A1.5 1.5 0 0 1 1 14.5zM2.5 3.5A.5.5 0 0 0 2 4v4.5A2.5 2.5 0 0 1 4.5 11H13.736a1.5 1.5 0 0 1 .462.291c.42.876 1.125 1.631 2.28 2.083A3.5 3.5 0 0 0 13.5 16H2.5A1.5 1.5 0 0 1 1 14.5v-11.5A.5.5 0 0 0 .5 2h-1zM2.5 3.5a.5.5 0 0 1 .5-.5h2.764a1.5 1.5 0 0 1 1.236.637l.636.953a.5.5 0 0 0 .408.209h4.456A1.5 1.5 0 0 1 14.5 5.5v11.5z" />
+            <path
+              d="M14.5 16h-12a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5h3.181a1.5 1.5 0 0 1 1.236.637l.636.953a.5.5 0 0 0 .408.209h6.059a.5.5 0 0 1 .5.5v2H14.5a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-.5.5z" />
+          </svg>
+          <h3 class="empty-state-title">Chưa có dự án nào</h3>
+        </div>
+      </div>
     </div>
 
 
-    <hr class="my-4" />
+    <hr />
 
     <div class="d-flex justify-content-between align-items-center">
       <h4 class="text-start pt-2">Dự án cá nhân</h4>
@@ -111,7 +122,7 @@
           </router-link>
 
           <div class="d-flex justify-content-between mt-2">
-            <div class="lh-lg" style="font-size: 14px; color: #032f5c">
+            <div class="lh-lg tacvu" style="font-size: 14px;">
               {{ project.tasks_count }} tác vụ
             </div>
             <div class="custom-dropdown">
@@ -124,14 +135,26 @@
                   <router-link class="dropdown-item" :to="`/projects/${project.id}`">Thông tin</router-link>
                 </li>
                 <li>
-                  <div class="dropdown-item" >Biểu đồ</div>
+                  <router-link :to="`/projects/${project.id}/overview`" class="dropdown-item">Tổng hợp</router-link>
                 </li>
               </ul>
             </div>
           </div>
         </div>
       </div>
-      <div v-if="personalProjects.length == 0" class="text-center">Không có dự án nào</div>
+
+      <div v-if="personalProjects.length == 0" class="empty-state-container">
+        <div class="empty-state-content">
+          <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" fill="currentColor" class="bi bi-folder2-open"
+            viewBox="0 0 16 16">
+            <path
+              d="M1 3.5A1.5 1.5 0 0 1 2.5 2h2.764c.958 0 1.76.606 2.072 1.40a2 2 0 0 0 .584.804A1.5 1.5 0 0 1 9.736 5h5.514A1.5 1.5 0 0 1 16 6.5v1.293L14.736 5H9.736a.5.5 0 0 0-.462.291c-.42.876-1.125 1.631-2.28 2.083A3.5 3.5 0 0 0 1 9.5a3.5 3.5 0 0 0 2.28 3.291c1.155.452 1.86.607 2.28.083A.5.5 0 0 0 7.736 12h5.514L16 13.293V14.5A1.5 1.5 0 0 1 14.5 16H2.5A1.5 1.5 0 0 1 1 14.5zM2.5 3.5A.5.5 0 0 0 2 4v4.5A2.5 2.5 0 0 1 4.5 11H13.736a1.5 1.5 0 0 1 .462.291c.42.876 1.125 1.631 2.28 2.083A3.5 3.5 0 0 0 13.5 16H2.5A1.5 1.5 0 0 1 1 14.5v-11.5A.5.5 0 0 0 .5 2h-1zM2.5 3.5a.5.5 0 0 1 .5-.5h2.764a1.5 1.5 0 0 1 1.236.637l.636.953a.5.5 0 0 0 .408.209h4.456A1.5 1.5 0 0 1 14.5 5.5v11.5z" />
+            <path
+              d="M14.5 16h-12a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5h3.181a1.5 1.5 0 0 1 1.236.637l.636.953a.5.5 0 0 0 .408.209h6.059a.5.5 0 0 1 .5.5v2H14.5a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-.5.5z" />
+          </svg>
+          <h3 class="empty-state-title">Chưa có dự án nào</h3>
+        </div>
+      </div>
     </div>
 
 
@@ -230,14 +253,137 @@ export default {
 };
 </script>
 <style scoped>
-.content {
-  padding-top: 76px;
-  background-color: #fafafa;
+.dark-mode .card {
+  background-color: #3C3E4B !important;
+  border-color: #555 !important;
+  box-shadow: 0 2px 4px rgba(255, 255, 255, 0.1);
 }
 
-.content1 {
-  padding-top: none;
-  background-color: #fafafa;
+.dark-mode .container-fluid {
+  background-color: #1a1d26;
+}
+
+.dark-mode .card h5 {
+  color: #fff !important;
+}
+
+.tacvu {
+  color: #042d64;
+}
+
+.dark-mode .tacvu {
+  color: #4888db;
+}
+
+.dark-mode .btn-light {
+  background-color: #4a4a4a !important;
+  border-color: #555 !important;
+  color: #f0f0f0 !important;
+}
+
+.dark-mode .btn-light:hover {
+  background-color: #555555 !important;
+}
+
+.dark-mode h4,
+.dark-mode .empty-state-title {
+  color: #f0f0f0;
+}
+
+.dark-mode .page-link {
+  background-color: #2a2a2a;
+  border-color: #555;
+  color: #f0f0f0;
+}
+
+.dark-mode .page-item.active .page-link {
+  background-color: #0f3b75;
+  border-color: #0f3b75;
+  color: #fff;
+}
+
+.dark-mode .page-link:hover {
+  background-color: #444;
+  border-color: #666;
+}
+
+.dark-mode .page-item.disabled .page-link {
+  background-color: #2a2a2a;
+  border-color: #555;
+  color: #888;
+}
+
+.dark-mode .card {
+  background-color: #3c3e4b;
+  border: 1px solid #444;
+}
+
+.dark-mode .card h5 {
+  color: #fff;
+  /* Tiêu đề màu trắng */
+}
+
+.dark-mode .card .text-decoration-none {
+  color: #f0f0f0;
+}
+
+
+.dark-mode .text-danger {
+  color: #ff8a8a !important;
+}
+
+.dark-mode .custom-dropdown-menu {
+  background-color: #3c3e4b;
+  border: 1px solid #555;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.3);
+}
+
+.dark-mode .custom-dropdown-menu li .dropdown-item {
+  color: #f0f0f0;
+}
+
+.dark-mode .custom-dropdown-menu li .dropdown-item:hover {
+  background-color: #4a4a4a;
+  color: #fff;
+}
+
+.dark-mode .btn-light {
+  background-color: #4a4a4a !important;
+  border-color: #555 !important;
+  color: #f0f0f0 !important;
+}
+
+.dark-mode .btn-light:hover {
+  background-color: #555555 !important;
+}
+
+.dark-mode .empty-state-content svg {
+  color: #999999;
+}
+
+.empty-state-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.empty-state-content {
+  text-align: center;
+  color: #6c757d;
+  padding: 40px;
+  border-radius: 8px;
+  max-width: 450px;
+}
+
+.empty-state-content svg {
+  color: #8a8787;
+  margin-bottom: 20px;
+}
+
+.empty-state-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #343a40;
 }
 
 .card {
@@ -292,7 +438,6 @@ export default {
 
 .custom-dropdown {
   position: relative;
-  /* Thêm position: relative để menu con định vị tương đối */
 }
 
 .custom-dropdown-menu {
@@ -300,7 +445,6 @@ export default {
   position: absolute;
   top: 100%;
   right: 0;
-  /* Đặt menu ở bên phải nút toggle */
   background-color: white;
   border-radius: 0.25rem;
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
@@ -310,14 +454,12 @@ export default {
   min-width: 10rem;
   z-index: 1000;
   transform: translate(0, 0.5rem);
-  /* Di chuyển xuống dưới một chút */
   transition: all 0.2s ease-in-out;
 }
 
 .custom-dropdown-menu.show {
   display: block;
   transform: translate(0, 0);
-  /* Di chuyển lên vị trí ban đầu khi hiển thị */
 }
 
 .custom-dropdown-menu li .dropdown-item {

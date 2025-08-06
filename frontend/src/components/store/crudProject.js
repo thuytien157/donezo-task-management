@@ -60,7 +60,6 @@ export const Project = {
         const res = await axios.post(
           "http://127.0.0.1:8000/api/project",
           {
-            owner_id: id.value,
             title: title.value,
             description: description.value,
             is_group_project: is_group_project.value,

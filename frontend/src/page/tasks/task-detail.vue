@@ -27,16 +27,16 @@
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb mb-0 custom-breadcrumb-ol">
                             <li class="breadcrumb-item">
-                                <router-link :to="'/home'"
-                                    class="text-decoration-none text-secondary fw-semibold small">Dự án</router-link>
+                                <router-link :to="'/home'" class="text-decoration-none fw-semibold small">Dự
+                                    án</router-link>
                             </li>
                             <li class="breadcrumb-item">
                                 <router-link :to="`/projects/${projectId}/tasks`"
-                                    class="text-decoration-none text-secondary fw-semibold small">Nhiệm vụ</router-link>
+                                    class="text-decoration-none fw-semibold small">Nhiệm vụ</router-link>
                             </li>
                         </ol>
                     </nav>
-                    <div class="text-dark fw-semibold task-main-title">
+                    <div class="fw-semibold task-main-title">
                         {{ task.title }}
                     </div>
                 </div>
@@ -73,17 +73,7 @@
                     Hủy bỏ
                     <span class="status-count" v-if="currentStatus === 'Hủy bỏ'">{{ statusTime }}</span>
                 </div>
-                <div>
-                    <span class="text-muted small me-1">1 / 1</span>
-                    <router-link :to="`/projects/${projectId}/tasks/${prevTaskId}`"
-                        class="btn btn-sm btn-light border text-secondary px-2 py-0">
-                        <i class="bi bi-chevron-left"></i>
-                    </router-link>
-                    <router-link :to="`/projects/${projectId}/tasks/${nextTaskId}`"
-                        class="btn btn-sm btn-light border text-secondary px-2 py-0">
-                        <i class="bi bi-chevron-right"></i>
-                    </router-link>
-                </div>
+
 
             </div>
 
@@ -116,17 +106,7 @@
                                 v-if="currentStatus === 'Hủy bỏ'">{{ statusTime }}</span></a>
                     </div>
                 </div>
-                <div class="d-flex gap-2">
-                    <span class="text-muted small me-1 d-flex align-items-center">1 / 1</span>
-                    <router-link :to="`/projects/${projectId}/tasks/${prevTaskId}`"
-                        class="btn btn-sm btn-light border text-secondary px-2 py-0">
-                        <i class="bi bi-chevron-left"></i>
-                    </router-link>
-                    <router-link :to="`/projects/${projectId}/tasks/${nextTaskId}`"
-                        class="btn btn-sm btn-light border text-secondary px-2 py-0">
-                        <i class="bi bi-chevron-right"></i>
-                    </router-link>
-                </div>
+
             </div>
         </header>
 
@@ -202,7 +182,7 @@
             <div class="row">
                 <div class="col-12">
                     <div class="d-flex align-items-center mb-3 flex-wrap">
-                        <input class="mb-0 fw-medium input" style="font-size: 2rem; color: #333" v-model="title"
+                        <input class="mb-0 fw-medium input" style="font-size: 2rem;" v-model="title"
                             @change="onTitleChange" />
                     </div>
 
@@ -290,8 +270,7 @@
                                 class="emoji-picker-container emoji-picker-small"></div>
                         </div>
 
-                        <button class="btn create-btn fw-semibold text-white mb-3" type="submit"
-                            style="background-color: #042d62; margin-top: 5px; font-size: 12px;">
+                        <button class="btn create-btn text-white mb-3" type="submit">
                             Gửi
                         </button>
                     </form>
@@ -307,7 +286,7 @@
                                     class="me-2 rounded-circle d-flex justify-content-center align-items-center"
                                     style="width: 32px; height: 32px; font-size: 14px" />
                                 <div>
-                                    <span class="fw-semibold" style="font-size: 14px">{{ item.creator.fullname }}
+                                    <span class="fw-semibold" style="font-size: 14px">{{ item.creator.username }}
                                         <small class="text-muted ms-2" style="font-size: 12px">{{
                                             formatDateTime(item.changed_at)
                                         }}</small></span>
@@ -363,6 +342,7 @@ import {
     isSameMonth,
     isSameYear,
 } from "date-fns";
+import { useTokenUser } from "@/components/store/useTokenUser";
 
 
 export default {
@@ -386,6 +366,10 @@ export default {
         const toggleStatusDropdown = () => {
             showStatusDropdown.value = !showStatusDropdown.value;
         };
+
+        const {
+            token
+        } = useTokenUser()
         const loading = ref(true);
         const task = ref({});
         const creator = ref({});
@@ -400,16 +384,12 @@ export default {
         const title = ref("");
         const description = ref("");
         const oldTaskData = ref({});
-        const tokenString = localStorage.getItem("token");
-        const token = ref(tokenString);
         const history = ref([]);
         const initialSelectedMembers = ref([]);
         const content = ref("");
         const note = ref(false);
         const statusTime = ref("");
         let timerId = null;
-        const prevTaskId = ref(props.taskId - 1);
-        const nextTaskId = ref(parseInt(props.taskId) + 1);
         const quillRef = ref(null);
         const showEmojiPicker = ref(false);
         const emojiPickerContainer = ref(null);
@@ -559,7 +539,12 @@ export default {
                 }
                 const res = await axios.get(
                     `http://127.0.0.1:8000/api/task/${props.taskId}/edit`
-                );
+                    , {
+                        headers: {
+                            Authorization: `Bearer ${token.value}`,
+                            "Content-Type": "multipart/form-data",
+                        },
+                    });
 
                 task.value = res.data.task;
                 title.value = res.data.task.title;
@@ -658,6 +643,7 @@ export default {
                         },
                     }
                 );
+                getTaskById(false);
             } catch (error) {
                 console.error(error);
             }
@@ -891,8 +877,6 @@ export default {
             description,
             title,
             handleStatusChange,
-            nextTaskId,
-            prevTaskId,
             handleUpdate,
             onTitleChange,
             onDescriptionChange,
@@ -900,7 +884,6 @@ export default {
             handleStatusChange,
             oldTaskData,
             token,
-            tokenString,
             history,
             handleAssigneesUpdate,
             sendContent,
@@ -931,6 +914,140 @@ export default {
 };
 </script>
 <style scoped>
+.dark-mode .task-detail-page {
+    background-color: #1a1a1a !important;
+    /* Nền của toàn bộ trang */
+}
+
+.dark-mode .task-detail-header {
+    background-color: #3c3e4b !important;
+    border-bottom: none;
+}
+
+.dark-mode .custom-breadcrumb-ol .breadcrumb-item a {
+    color: #e7e6e6;
+}
+
+.dark-mode .task-main-title {
+    color: #e7e6e6;
+}
+
+.dark-mode .small {
+    color: #e7e6e6;
+}
+
+.dark-mode .task-info-value {
+    color: #e7e6e6;
+}
+
+.dark-mode .task-content {
+    background-color: #3c3e4b !important;
+    /* Nền chính của nội dung */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+    color: #f0f0f0;
+}
+
+.dark-mode .member-info .member-name {
+    color: #f0f0f0 !important;
+}
+
+.dark-mode .member-info .member-name span {
+    color: #ccc !important;
+}
+
+.dark-mode .task-title-input {
+    color: #f0f0f0 !important;
+    border-bottom-color: #444;
+}
+
+.dark-mode .task-info-label {
+    color: #ffffff;
+}
+
+.dark-mode .form-select:disabled,
+.dark-mode .form-control:disabled {
+    background-color: #4a4a4a;
+    color: #ccc;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.dark-mode .ql-container.ql-snow,
+.dark-mode .ql-toolbar.ql-snow {
+    background-color: #3a3a3a;
+    border-color: #555;
+}
+
+.dark-mode .ql-editor {
+    background-color: #3a3a3a;
+    color: #f0f0f0;
+}
+
+.dark-mode .create-btn {
+    margin-top: 5px;
+    background-color: #0f3b75;
+}
+
+.dark-mode .create-btn:hover {
+    background-color: #385579;
+}
+
+.dark-mode .divider {
+    color: #ccc;
+}
+
+.dark-mode .divider::before,
+.dark-mode .divider::after {
+    background: #555;
+}
+
+.dark-mode .activity-item .fw-semibold {
+    color: #f0f0f0;
+}
+
+.dark-mode .activity-item .small {
+    color: #ccc;
+}
+
+@keyframes pulse-dark {
+    0% {
+        background-color: #444;
+    }
+
+    50% {
+        background-color: #555;
+    }
+
+    100% {
+        background-color: #444;
+    }
+}
+
+.dark-mode .skeleton-box {
+    background-color: #444;
+    animation: pulse-dark 1.5s infinite;
+}
+
+.dark-mode .skeleton-input-title,
+.dark-mode .skeleton-label,
+.dark-mode .skeleton-value,
+.dark-mode .skeleton-multiselect-value,
+.dark-mode .skeleton-deadline-value,
+.dark-mode .skeleton-icon-btn,
+.dark-mode .skeleton-textarea,
+.dark-mode .skeleton-btn-small,
+.dark-mode .skeleton-to-label,
+.dark-mode .skeleton-badge,
+.dark-mode .skeleton-avatar,
+.dark-mode .skeleton-input,
+.dark-mode .skeleton-btn-send,
+.dark-mode .skeleton-hr,
+.dark-mode .skeleton-activity-header,
+.dark-mode .skeleton-activity-text,
+.dark-mode .skeleton-activity-li {
+    background-color: #444;
+}
+
 .input-group1 {
     position: relative;
     display: flex;
@@ -1078,6 +1195,10 @@ export default {
 .skeleton-badge {
     width: 100px;
     height: 24px;
+}
+
+.title {
+    color: #1a1a1a !important;
 }
 
 .skeleton-avatar {
@@ -1282,13 +1403,17 @@ export default {
 }
 
 .input {
-    color: #fff;
+    color: #444242;
     font-size: 0.9rem;
     background-color: transparent;
     width: 100%;
     box-sizing: border-box;
     border: none;
     border-bottom: 1px solid rgba(182, 179, 179, 0.39);
+}
+
+.dark-mode input {
+    color: #fff !important;
 }
 
 /* styling of animated border */
@@ -1351,7 +1476,7 @@ input:focus~.input-border {
 }
 
 .custom-breadcrumb-ol .breadcrumb-item a {
-    color: #6c757d !important;
+    color: #6c757d;
 }
 
 .task-main-title {

@@ -18,22 +18,44 @@
 import { onMounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { toast } from 'vue3-toastify';
-
+import Swal from 'sweetalert2';
 const route = useRoute();
 const router = useRouter();
 const loading = ref(true);
 
 const handleLoginCallback = async () => {
     const token = route.query.token;
+    const loginExistingAccount = route.query.login_existing_account;
     const userStr = {
         user: route.query.user,
         id: route.query.id
     };
 
-    if (token && userStr.user) {
-        localStorage.setItem('token', token);
+    if (loginExistingAccount === 'true' && token) {
+        loading.value = false;
+        Swal.fire({
+            title: 'Đã có tài khoản!',
+            text: "Email này đã được đăng ký. Bạn có muốn đăng nhập không?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#042d62',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Đăng nhập',
+            cancelButtonText: 'Hủy'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                localStorage.setItem('token', token);
+                toast.success("Đăng nhập thành công!");
+                router.push('/home').then(() => window.location.reload());
+            } else {
+                router.push('/login');
+            }
+        });
+    }
+    else if (token && userStr.user) {
+        localStorage.setItem('token_donezo', token);
         try {
-            localStorage.setItem('user', JSON.stringify(userStr));
+            localStorage.setItem('user_donezo', JSON.stringify(userStr));
         } catch (e) {
             console.error('Lỗi stringify user:', e);
         }
@@ -43,8 +65,8 @@ const handleLoginCallback = async () => {
             toast.success("Đăng nhập thành công!");
             router.push('/home').then(() => window.location.reload());
         }, 1500);
-
-    } else {
+    }
+    else {
         loading.value = false;
         router.push('/login');
     }

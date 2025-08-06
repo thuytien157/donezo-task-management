@@ -6,9 +6,11 @@ use App\Enums\TaskStatusEnum;
 use App\Events\TaskUpdated;
 use App\Models\Project;
 use App\Models\Project_member;
+use Database\Seeders\projects;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class ProjectController extends Controller
@@ -49,7 +51,6 @@ class ProjectController extends Controller
         $validator = Validator::make(
             $request->all(),
             [
-                'owner_id' => 'required',
                 'title' => 'required|string|unique:projects,title',
                 'is_group_project' => 'required|boolean',
                 'start_date' => 'required|date',
@@ -57,7 +58,6 @@ class ProjectController extends Controller
                 'status' => 'required',
             ],
             [
-                'owner_id.required' => 'Vui lòng đăng nhập',
                 'title.required' => 'Vui lòng nhập tiêu đề dự án',
                 'title.string' => 'Tiêu đề chỉ có thể chứa chữ cái, không chứa số và các ký tự đặc biệt',
                 'start_date.required' => 'Vui lòng nhập ngày bắt đầu',
@@ -82,8 +82,10 @@ class ProjectController extends Controller
             ], 422);
         }
 
+        $userId = Auth::id();
+
         $newproject = new Project();
-        $newproject->owner_id = $request->owner_id;
+        $newproject->owner_id = $userId;
         $newproject->title = $request->title;
         $newproject->description = $request->description;
         $newproject->is_group_project = $request->is_group_project;
@@ -94,7 +96,7 @@ class ProjectController extends Controller
         if ($newproject->save()) {
             $projectMember = new Project_member();
             $projectMember->project_id = $newproject->id;
-            $projectMember->user_id = $request->owner_id;
+            $projectMember->user_id = $userId;
             $projectMember->role = 'leader';
             $projectMember->joined_at = Carbon::now();
             $projectMember->save();
@@ -167,5 +169,60 @@ class ProjectController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+
+
+    public function report(string $id)
+    {
+        $project = Project::withCount('tasks')->find($id);
+
+        if (!$project) {
+            return response()->json(['message' => 'Dự án không tồn tại'], 404);
+        }
+
+        $defaultStatuses = TaskStatusEnum::values();
+
+        $totalTaskByStatus = $project->tasks()
+            ->select('status', DB::raw('count(*) as total'))
+            ->groupBy('status')
+            ->get();
+
+        $statusCounts = $totalTaskByStatus->pluck('total', 'status')->all();
+        $finalTotalTaskByStatus = array_merge(array_fill_keys($defaultStatuses, 0), $statusCounts);
+
+        $totalTasks = $project->tasks_count;
+
+        $tasksByUserAndStatus = DB::table('tasks')
+            ->join('task_assignees', 'tasks.id', '=', 'task_assignees.task_id')
+            ->join('users', 'task_assignees.user_id', '=', 'users.id')
+            ->where('tasks.project_id', $id)
+            ->select('users.id', 'users.email', 'tasks.status', DB::raw('count(*) as total'))
+            ->groupBy('users.id', 'users.email', 'tasks.status')
+            ->get();
+
+        $usersReport = $tasksByUserAndStatus->groupBy('id')->map(function ($items, $userId) use ($defaultStatuses) {
+            $user = $items->first();
+            $statusCounts = $items->pluck('total', 'status')->all();
+
+            $finalStatusCounts = array_merge(array_fill_keys($defaultStatuses, 0), $statusCounts);
+
+            $totalTasksForUser = array_sum($finalStatusCounts);
+
+            return [
+                    'user' => [
+                        'email' => $user->email,
+                        'total_tasks_by_status' => $finalStatusCounts,
+                        'total_tasks' => $totalTasksForUser,
+                    ],
+
+                ];
+            })->values();
+
+            return response()->json([
+                'totalTaskByStatus' => $finalTotalTaskByStatus,
+                'tasksByUserAndStatus' => $usersReport,
+                'totalTasks' => $totalTasks
+            ]);
     }
 }
