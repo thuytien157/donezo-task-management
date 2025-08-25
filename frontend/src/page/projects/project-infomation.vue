@@ -121,7 +121,7 @@
                         <div class="task-info-row">
                             <div class="task-info-label">Trạng thái</div>
 
-                            <select class="form-select" v-model="project.status" disabled>
+                            <select class="form-select" v-model="project.status">
                                 <option value="Đang thực hiện">Đang thực hiện</option>
                                 <option value="Chưa bắt đầu">Chưa bắt đầu</option>
                             </select>

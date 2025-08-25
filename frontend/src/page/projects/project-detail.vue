@@ -222,7 +222,7 @@
                   <img :src="value.avatar" alt="" srcset="" class="member-avatar" />
                   <div class="member-info">
                     <p class="mb-0 member-name">
-                      {{ value.username }} <span class="text-muted">(bạn)</span>
+                      {{ value.username }} 
                     </p>
                     <small class="member-role">{{ value.email }}</small>
                   </div>

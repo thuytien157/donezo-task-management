@@ -22,7 +22,7 @@ Route::post('/forgot-password', [UserController::class, 'sendResetLink']);
 Route::post('/reset-password', [UserController::class, 'resetPassword']);
 Route::resource('project', ProjectController::class)->middleware('auth:sanctum');
 Route::get('/project/report/{project_id}', [ProjectController::class, 'report'])->middleware('auth:sanctum');
-Route::put('/task/update-status', [TaskController::class, 'updateStatus']);
+Route::put('/task/update-status', [TaskController::class, 'updateStatus'])->middleware('auth:sanctum');
 Route::put('/task/update-description', [TaskController::class, 'updateDescription'])->middleware('auth:sanctum');
 Route::post('/task/upload-image', [TaskController::class, 'uploadImage']);
 Route::resource('task', TaskController::class)->middleware('auth:sanctum');

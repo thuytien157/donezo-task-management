@@ -2,7 +2,7 @@
 
 ## 📌DEMO
 
-* **Link website**: https://shopgrid-vue.netlify.app
+* **Link website**: https://donezo-vue.netlify.app/
 
 ### ✨Tài khoản thử nghiệm
 

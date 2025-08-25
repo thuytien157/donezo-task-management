@@ -157,7 +157,7 @@ class TaskController extends Controller
         $task->description = $request->description;
 
         if ($task->save()) {
-            event(new TaskUpdated($task));
+            event(new TaskUpdated($task->description));
             return response()->json(['message' => 'Cập nhật trạng thái thành công'], 200);
         } else {
             return response()->json(['message' => 'Cập nhật thất bại'], 500);

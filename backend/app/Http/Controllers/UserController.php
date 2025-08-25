@@ -166,7 +166,7 @@ class UserController extends Controller
             if (!$user) {
                 $user = User::create([
                     'email' => $socialUser->getEmail(),
-                    'fullname' => $socialUser->getName() ?? $socialUser->getNickname(),
+                    'username' => $socialUser->getName() ?? $socialUser->getNickname(),
                     'provider_id' => $socialUser->getId(),
                     'provider_name' => $provider,
                     'avatar' => $socialUser->getAvatar(),

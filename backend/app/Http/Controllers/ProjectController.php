@@ -160,6 +160,7 @@ class ProjectController extends Controller
         $project = Project::find($id);
 
         $project->description = $request->description;
+        $project->status = $request->status;
         $project->save();
     }
 
