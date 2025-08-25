@@ -110,7 +110,7 @@ export default {
             const token = localStorage.getItem("token_donezo");
             try {
                 const res = await axios.post(
-                    "http://127.0.0.1:8000/api/login",
+                    `${import.meta.env.VITE_URL_API}api/login`,
                     {
                         email: email.value,
                         password: password.value,
@@ -148,10 +148,10 @@ export default {
         };
 
         const loginGG = async () => {
-            window.location.href = "http://127.0.0.1:8000/api/google/redirect";
+            window.location.href = `${import.meta.env.VITE_URL_API}api/google/redirect`;
         };
         const loginGH = async () => {
-            window.location.href = "http://127.0.0.1:8000/api/github/redirect";
+            window.location.href = `${import.meta.env.VITE_URL_API}api/github/redirect`;
         };
 
         return {

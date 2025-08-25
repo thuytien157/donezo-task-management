@@ -327,7 +327,7 @@ export default {
         const getTaskByIdProject = async (id) => {
             try {
                 // isLoading.value = true;
-                const res = await axios.get(`http://127.0.0.1:8000/api/project/${id}`, {
+                const res = await axios.get(`${import.meta.env.VITE_URL_API}api/project/${id}`, {
                     headers: {
                         Authorization: `Bearer ${token.value}`,
                     },
@@ -355,7 +355,7 @@ export default {
         const insertTask = async (project_id) => {
             try {
                 const res = await axios.post(
-                    "http://127.0.0.1:8000/api/task",
+                    `${import.meta.env.VITE_URL_API}api/task`,
                     {
                         project_id: project_id,
                         status: status.value,

@@ -16,7 +16,7 @@ export const Project = {
     const getAllProject = async () => {
       try {
         isLoading.value = true;
-        const res = await axios.get("http://127.0.0.1:8000/api/project", {
+        const res = await axios.get(`${import.meta.env.VITE_URL_API}api/project`, {
           headers: {
             Authorization: `Bearer ${token.value}`,
           },
@@ -58,7 +58,7 @@ export const Project = {
     const insertProject = async () => {
       try {
         const res = await axios.post(
-          "http://127.0.0.1:8000/api/project",
+          `${import.meta.env.VITE_URL_API}api/project`,
           {
             title: title.value,
             description: description.value,
@@ -96,7 +96,7 @@ export const Project = {
       isLoading.value = true;
       try {
         const res = await axios.get(
-          `http://127.0.0.1:8000/api/project/${id}/edit`,
+          `${import.meta.env.VITE_URL_API}api/project/${id}/edit`,
           {
             headers: {
               Authorization: `Bearer ${token.value}`,
@@ -117,7 +117,7 @@ export const Project = {
       isLoading.value = true;
       try {
         const res = await axios.put(
-          `http://127.0.0.1:8000/api/project/${id}`,
+          `${import.meta.env.VITE_URL_API}api/project/${id}`,
           {
             description: description.value,
           },

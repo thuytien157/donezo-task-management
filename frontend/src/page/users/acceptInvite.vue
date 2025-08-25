@@ -27,7 +27,7 @@ const route = useRoute();
 const router = useRouter();
 
 const loading = ref(true);
-const token = ref(localStorage.getItem("token"));
+const token = ref(localStorage.getItem("token_donezo"));
 const handleInviteCallback = async () => {
     const invitationToken = route.query.token;
 
@@ -50,7 +50,7 @@ const handleInviteCallback = async () => {
     }
 
     try {
-        const res = await axios.post('http://127.0.0.1:8000/api/invite-member-accepted', {
+        const res = await axios.post(`${import.meta.env.VITE_URL_API}api/invite-member-accepted`, {
             token: invitationToken,
         }, {
             headers: {

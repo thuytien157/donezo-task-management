@@ -48,7 +48,7 @@ export default {
         const forgotPass = async () => {
             isLoading.value = true
             try {
-                const res = await axios.post('http://127.0.0.1:8000/api/forgot-password', {
+                const res = await axios.post(`${import.meta.env.VITE_URL_API}api/forgot-password`, {
                     email: email.value
                 })
                 toast.success('Gửi thành công')

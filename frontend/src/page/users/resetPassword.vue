@@ -15,7 +15,7 @@
                 <div class="form-group">
                     <label for="email">Nhập lại mật khẩu</label>
                     <small class="text-danger" v-if="errors.password_confirmation">{{ errors.password_confirmation[0]
-                        }}</small>
+                    }}</small>
                     <input type="password" id="email" name="email" placeholder="Nhập mật của bạn tại đây..."
                         v-model="password_confirmation">
                 </div>
@@ -61,7 +61,7 @@ export default {
         const resetPass = async () => {
             isLoading.value = true
             try {
-                const res = await axios.post('http://127.0.0.1:8000/api/reset-password', {
+                const res = await axios.post(`${import.meta.env.VITE_URL_API}api/reset-password`, {
                     email: email,
                     password: password.value,
                     password_confirmation: password_confirmation.value,

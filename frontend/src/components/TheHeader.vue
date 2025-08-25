@@ -97,7 +97,7 @@ export default {
 
         const logout = async () => {
             try {
-                await axios.get("http://127.0.0.1:8000/api/logout", {
+                await axios.get(`${import.meta.env.VITE_URL_API}api/logout`, {
                     headers: {
                         Authorization: `Bearer ${token.value}`,
                     },

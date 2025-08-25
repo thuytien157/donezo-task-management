@@ -16,11 +16,11 @@ class users extends Seeder
     {
         DB::table('users')->insert([
             [
-                'fullname' => 'Thủy Tiên',
-                'email' => 'thuytien@example.com',
+                'username' => 'Thủy Tiên',
+                'email' => 'thuytien.hoctap@gmail.com',
                 'email_verified_at' => now(),
-                'password' => Hash::make('password123'),
-                'avatar' => 'avatars/default1.png',
+                'password' => Hash::make('Thuytien965002@'),
+                'avatar' => 'https://lh3.googleusercontent.com/a/ACg8ocKLx6mPcGrcQJM5Knszm9fFbKnqRO3vDtS1mKom-3_VU8XP9G8=s96-c',
                 'created_at' => now(),
                 'updated_at' => now(),
             ]

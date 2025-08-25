@@ -64,7 +64,7 @@ export default {
         const report = async (id) => {
             isLoading.value = true
             try {
-                const res = await axios.get(`http://127.0.0.1:8000/api/project/report/${id}`, {
+                const res = await axios.get(`${import.meta.env.VITE_URL_API}api/project/report/${id}`, {
                     headers: {
                         Authorization: `Bearer ${token.value}`,
                     },

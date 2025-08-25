@@ -210,19 +210,19 @@ class ProjectController extends Controller
             $totalTasksForUser = array_sum($finalStatusCounts);
 
             return [
-                    'user' => [
-                        'email' => $user->email,
-                        'total_tasks_by_status' => $finalStatusCounts,
-                        'total_tasks' => $totalTasksForUser,
-                    ],
+                'user' => [
+                    'email' => $user->email,
+                    'total_tasks_by_status' => $finalStatusCounts,
+                    'total_tasks' => $totalTasksForUser,
+                ],
 
-                ];
-            })->values();
+            ];
+        })->values();
 
-            return response()->json([
-                'totalTaskByStatus' => $finalTotalTaskByStatus,
-                'tasksByUserAndStatus' => $usersReport,
-                'totalTasks' => $totalTasks
-            ]);
+        return response()->json([
+            'totalTaskByStatus' => $finalTotalTaskByStatus,
+            'tasksByUserAndStatus' => $usersReport,
+            'totalTasks' => $totalTasks
+        ]);
     }
 }

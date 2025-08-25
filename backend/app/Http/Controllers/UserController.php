@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Mail\ResetPass;
 use App\Models\PasswordReset;
 use App\Models\User;
-use DB;
 use Illuminate\Database\Eloquent\Casts\Json;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -160,7 +159,7 @@ class UserController extends Controller
             // Email đã tồn tại và là tài khoản đăng ký bằng mật khẩu
             if ($user && $user->provider_name === null) {
                 $token = $user->createToken('token')->plainTextToken;
-                return redirect("http://localhost:5173/login-success?token=$token&login_existing_account=true");
+                return redirect("https://donezo-vue.netlify.app/login-success?token=$token&login_existing_account=true");
             }
 
             // Email chưa tồn tại, tạo tài khoản mới
@@ -177,7 +176,7 @@ class UserController extends Controller
 
             // Đăng nhập thành công (tài khoản mới hoặc tài khoản social đã tồn tại)
             $token = $user->createToken('token')->plainTextToken;
-            return redirect("http://localhost:5173/login-success?token=$token&user=" . urlencode(json_encode($user->avatar)) . '&id=' . $user->id);
+            return redirect("https://donezo-vue.netlify.app/login-success?token=$token&user=" . urlencode(json_encode($user->avatar)) . '&id=' . $user->id);
         } catch (\Exception $e) {
             return response()->json([
                 'error' => 'Đăng nhập thất bại!',

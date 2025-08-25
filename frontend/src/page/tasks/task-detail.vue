@@ -520,7 +520,7 @@ export default {
             const formData = new FormData();
             formData.append("image", file);
             const res = await axios.post(
-                "http://127.0.0.1:8000/api/task/upload-image",
+                `${import.meta.env.VITE_URL_API}api/task/upload-image`,
                 formData,
                 {
                     headers: {
@@ -538,7 +538,7 @@ export default {
                     loading.value = true;
                 }
                 const res = await axios.get(
-                    `http://127.0.0.1:8000/api/task/${props.taskId}/edit`
+                    `${import.meta.env.VITE_URL_API}api/task/${props.taskId}/edit`
                     , {
                         headers: {
                             Authorization: `Bearer ${token.value}`,
@@ -602,7 +602,7 @@ export default {
 
             try {
                 await axios.put(
-                    `http://127.0.0.1:8000/api/task/${props.taskId}`,
+                    `${import.meta.env.VITE_URL_API}api/task/${props.taskId}`,
                     {
                         ...updateData,
                         ...historyData,
@@ -632,7 +632,7 @@ export default {
             // console.log('Nội dung mới:', newContent.value);
             try {
                 await axios.put(
-                    "http://127.0.0.1:8000/api/task/update-description",
+                    `${import.meta.env.VITE_URL_API}api/task/update-description`,
                     {
                         task_id: props.taskId,
                         description: description.value,
@@ -690,7 +690,7 @@ export default {
 
             try {
                 const res = await axios.post(
-                    `http://127.0.0.1:8000/api/task-history`,
+                    `${import.meta.env.VITE_URL_API}api/task-history`,
                     {
                         task_id: props.taskId,
                         content: finalContent,

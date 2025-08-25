@@ -8,8 +8,8 @@
         <i :class="isListView ? 'bi bi-grid-3x3-gap-fill' : 'bi bi-list-task'"></i>
       </div>
 
-      <button v-if="(isLeader && isGroup) || project_name === 'Dự án Todo App'" class="action-item share-button"
-        data-bs-toggle="modal" data-bs-target="#shareModal">
+      <button v-if="(isLeader && isGroup)" class="action-item share-button" data-bs-toggle="modal"
+        data-bs-target="#shareModal">
         <i class="bi bi-person-plus-fill"></i>
         Chia sẻ
       </button>
@@ -326,7 +326,7 @@ export default {
     const getTaskByIdProject = async (id) => {
       try {
         isLoading.value = true;
-        const res = await axios.get(`http://127.0.0.1:8000/api/project/${id}`, {
+        const res = await axios.get(`${import.meta.env.VITE_URL_API}api/project/${id}`, {
           headers: {
             Authorization: `Bearer ${token.value}`,
           },
@@ -361,7 +361,7 @@ export default {
     const insertTask = async (project_id, status) => {
       try {
         const res = await axios.post(
-          "http://127.0.0.1:8000/api/task",
+          `${import.meta.env.VITE_URL_API}api/task`,
           {
             project_id: project_id,
             status: status,
@@ -406,7 +406,7 @@ export default {
         if (oldStatus !== newStatus) {
           try {
             await axios.put(
-              "http://127.0.0.1:8000/api/task/update-status",
+              `${import.meta.env.VITE_URL_API}api/task/update-status`,
               {
                 task_id: movedTask.id,
                 status: newStatus,
@@ -443,7 +443,7 @@ export default {
       sendLoading.value = true;
       try {
         await axios.post(
-          "http://127.0.0.1:8000/api/invite-member",
+          `${import.meta.env.VITE_URL_API}api/invite-member`,
           {
             project_id: props.projectId,
             email: email.value,
