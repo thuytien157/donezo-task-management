@@ -47,8 +47,9 @@ const handleLoginCallback = async () => {
                 localStorage.setItem('token_donezo', token);
                 localStorage.setItem('user_donezo', JSON.stringify(userStr));
                 toast.success("Đăng nhập thành công!");
-                router.push('/home');
-            } 
+                router.push('/');
+                window.location.reload();
+            }
         });
     }
     else if (token && userStr.user) {

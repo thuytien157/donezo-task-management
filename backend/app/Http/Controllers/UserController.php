@@ -159,7 +159,7 @@ class UserController extends Controller
             // Email đã tồn tại và là tài khoản đăng ký bằng mật khẩu
             if ($user && $user->provider_name === null) {
                 $token = $user->createToken('token')->plainTextToken;
-                return redirect("https://donezo-vue.netlify.app/login-success?token=$token&login_existing_account=true&user=" . urlencode($user->avatar) . "&id=" . $user->id);
+                return redirect("https://donezo-vue.netlify.app/login-success?token=$token&login_existing_account=true&user=" . urlencode(json_encode($user->avatar)) . "&id=" . $user->id);
 
             }
 

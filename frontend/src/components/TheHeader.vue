@@ -11,20 +11,21 @@
                 </router-link>
 
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#navbarResponsive">
+                    data-bs-target="#navbarResponsive" ref="navbarToggler">
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
-                <div class="collapse navbar-collapse justify-content-between align-items-center" id="navbarResponsive">
-                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                <div class="collapse navbar-collapse" id="navbarResponsive" ref="navbarCollapse">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <router-link :to="'/projects/new'" type="button" class="btn create-btn">
+                            <router-link :to="'/projects/new'" type="button" class="btn create-btn"
+                                @click="closeNavbar">
                                 + Thêm dự án
                             </router-link>
                         </li>
                     </ul>
 
-                    <ul class="navbar-nav me-3 mb-2 mb-lg-0">
+                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                         <li class="nav-item">
                             <div class="dropdown-container">
                                 <a class="nav-link" @click="toggleDropdown()">
@@ -56,29 +57,42 @@
         </nav>
     </header>
 </template>
-
 <script>
-import axios from "axios";
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import { toast } from "vue3-toastify";
 import { Project } from "./store/crudProject";
 import { useTokenUser } from "./store/useTokenUser";
 import { useDarkMode } from "./store/darkmode";
+import { Collapse } from "bootstrap";
+import axios from "axios";
 
 export default {
     setup() {
         const showDropdown = ref(false);
-        // const isDarkMode = ref(false);
+        const navbarCollapse = ref(null);
+        const router = useRouter();
 
-        function toggleDropdown() {
+        const closeNavbar = () => {
+            if (navbarCollapse.value) {
+                const bsCollapse = new Collapse(navbarCollapse.value, { toggle: false });
+                bsCollapse.hide();
+            }
+        };
+
+        router.beforeEach((to, from, next) => {
+            closeNavbar();
+            next();
+        });
+
+        const toggleDropdown = () => {
             showDropdown.value = !showDropdown.value;
-        }
+        };
 
         const {
             isDarkMode,
             toggleDarkMode
-        } = useDarkMode.setup()
+        } = useDarkMode.setup();
 
         const {
             isLoading,
@@ -97,7 +111,7 @@ export default {
         const {
             avatar,
             token
-        } = useTokenUser()
+        } = useTokenUser();
 
         const logout = async () => {
             try {
@@ -135,6 +149,8 @@ export default {
             showDropdown,
             isDarkMode,
             toggleDarkMode,
+            navbarCollapse,
+            closeNavbar
         };
     },
 };

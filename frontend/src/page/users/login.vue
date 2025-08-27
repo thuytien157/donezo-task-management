@@ -132,7 +132,7 @@ export default {
                 localStorage.setItem("token_donezo", res.data.token);
 
                 errors.value = {};
-                router.push("/home");
+                router.push("http://localhost:5173/home");
                 toast.success("Đăng nhập thành công");
             } catch (error) {
                 if (error.response && error.response.status === 422) {
