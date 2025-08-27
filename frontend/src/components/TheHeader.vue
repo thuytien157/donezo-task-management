@@ -29,7 +29,7 @@
                                 <img v-if="avatar && avatar !== ''" :src="avatar" alt="Avatar" class="avatar-img" />
                                 <i v-else class="bi bi-people avatar-icon"></i>
                             </a>
-                            <ul class="dropdown-menu" v-if="showDropdown">
+                            <ul class="dropdown-menu" v-show="showDropdown">
                                 <li>
                                     <div class="dropdown-item d-flex justify-content-between" style="cursor: pointer">
                                         Chế độ tối
