@@ -16,37 +16,41 @@
                 </button>
 
                 <div class="collapse navbar-collapse justify-content-between align-items-center" id="navbarResponsive">
-                    <div
-                        class="d-flex flex-column flex-lg-row gap-2 align-items-start align-items-lg-center justify-content-end mt-2 mt-lg-0 w-100 me-3">
-                        <router-link :to="'/projects/new'" type="button" class="btn create-btn">
-                            + Thêm dự án
-                        </router-link>
-                    </div>
+                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <router-link :to="'/projects/new'" type="button" class="btn create-btn">
+                                + Thêm dự án
+                            </router-link>
+                        </li>
+                    </ul>
 
-                    <div class="d-flex align-items-center gap-3 mt-3 mt-lg-0">
-                        <div class="dropdown-container">
-                            <a class="nav-link" @click="toggleDropdown()">
-                                <img v-if="avatar && avatar !== ''" :src="avatar" alt="Avatar" class="avatar-img" />
-                                <i v-else class="bi bi-people avatar-icon"></i>
-                            </a>
-                            <ul class="dropdown-menu" v-if="showDropdown">
-                                <li>
-                                    <div class="dropdown-item d-flex justify-content-between" style="cursor: pointer">
-                                        Chế độ tối
-                                        <label class="toggle-switch">
-                                            <input type="checkbox" @change="toggleDarkMode" :checked="isDarkMode" />
-                                            <span class="switch-bg">
-                                                <span class="switch-handle"></span>
-                                            </span>
-                                        </label>
-                                    </div>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" @click="logout" style="cursor: pointer">Đăng xuất</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
+                    <ul class="navbar-nav me-3 mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <div class="dropdown-container">
+                                <a class="nav-link" @click="toggleDropdown()">
+                                    <img v-if="avatar && avatar !== ''" :src="avatar" alt="Avatar" class="avatar-img" />
+                                    <i v-else class="bi bi-people avatar-icon"></i>
+                                </a>
+                                <ul class="dropdown-menu" v-if="showDropdown">
+                                    <li>
+                                        <div class="dropdown-item d-flex justify-content-between"
+                                            style="cursor: pointer">
+                                            Chế độ tối
+                                            <label class="toggle-switch">
+                                                <input type="checkbox" @change="toggleDarkMode" :checked="isDarkMode" />
+                                                <span class="switch-bg">
+                                                    <span class="switch-handle"></span>
+                                                </span>
+                                            </label>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" @click="logout" style="cursor: pointer">Đăng xuất</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </nav>

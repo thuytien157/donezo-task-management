@@ -31,7 +31,7 @@ const handleLoginCallback = async () => {
         id: route.query.id
     };
 
-    if (loginExistingAccount === 'true' && token) {
+    if (loginExistingAccount === 'true' && token && userStr) {
         loading.value = false;
         Swal.fire({
             title: 'Đã có tài khoản!',
@@ -44,12 +44,11 @@ const handleLoginCallback = async () => {
             cancelButtonText: 'Hủy'
         }).then((result) => {
             if (result.isConfirmed) {
-                localStorage.setItem('token', token);
+                localStorage.setItem('token_donezo', token);
+                localStorage.setItem('user_donezo', JSON.stringify(userStr));
                 toast.success("Đăng nhập thành công!");
-                router.push('/home').then(() => window.location.reload());
-            } else {
-                router.push('/login');
-            }
+                router.push('/home');
+            } 
         });
     }
     else if (token && userStr.user) {
