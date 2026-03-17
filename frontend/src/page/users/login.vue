@@ -132,7 +132,7 @@ export default {
                 localStorage.setItem("token_donezo", res.data.token);
 
                 errors.value = {};
-                router.push("https://shopgrid-vue.netlify.app/home");
+                router.push("/home");
                 toast.success("Đăng nhập thành công");
             } catch (error) {
                 if (error.response && error.response.status === 422) {
